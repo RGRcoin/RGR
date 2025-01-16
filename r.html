@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RGR Coin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Основные стили */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #8B0000, #FF4500, #FFA07A);
+            color: #f0f0f0; /* Светло-серый текст */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Анимация падающего огня */
+        @keyframes fall {
+            0% {
+                transform: translateY(-100%) translateX(var(--start-x)) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(110vh) translateX(var(--end-x)) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .fire-emoji {
+            position: absolute;
+            font-size: 2rem;
+            animation: fall 5s linear infinite, spin 2s linear infinite;
+            user-select: none;
+            top: -10%;
+            left: var(--start-x);
+        }
+
+        /* Контейнер для основного меню */
+        .container {
+            text-align: center;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 2px solid #FF4500;
+            position: relative;
+            z-index: 1;
+        }
+
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: glow 2s infinite alternate;
+            font-weight: 700;
+            color: #f0f0f0; /* Светло-серый текст */
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px #8B0000, 0 0 20px #8B0000, 0 0 30px #8B0000;
+            }
+            to {
+                text-shadow: 0 0 20px #FF4500, 0 0 30px #FF4500, 0 0 40px #FF4500;
+            }
+        }
+
+        .user-info {
+            margin-bottom: 20px;
+        }
+
+        .input-field {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px;
+            width: 200px;
+            font-family: 'Roboto', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            color: #f0f0f0; /* Светло-серый текст */
+        }
+
+        .button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: #8B0000;
+            color: #f0f0f0; /* Светло-серый текст */
+            cursor: pointer;
+            transition: background 0.3s, transform 0.2s;
+            margin: 5px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+        }
+
+        .button:hover {
+            background: #FF4500;
+            transform: scale(1.05);
+        }
+
+        .coin-section {
+            margin-bottom: 20px;
+        }
+
+        .collect-button {
+            font-size: 1.2rem;
+            padding: 15px 30px;
+        }
+
+        #timer {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            color: #f0f0f0; /* Светло-серый текст */
+        }
+
+        .about-button {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #FF4500;
+        }
+
+        .about-button:hover {
+            background: #8B0000;
+        }
+
+        /* Стили для модальных окон */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid #FF4500;
+            text-align: center;
+            max-width: 400px;
+            color: #f0f0f0; /* Светло-серый текст */
+        }
+
+        .close-button {
+            background: #FF4500;
+            color: #f0f0f0; /* Светло-серый текст */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            font-family: 'Roboto', sans-serif;
+            font-weight: 700;
+        }
+
+        .close-button:hover {
+            background: #8B0000;
+        }
+
+        /* Версия внизу справа */
+        .version {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 0.9rem;
+            color: rgba(240, 240, 240, 0.7); /* Полупрозрачный светло-серый */
+        }
+    </style>
+</head>
+<body>
+    <!-- Пролетающие эмодзи огня -->
+    <div class="fire-emoji" style="--start-x: 5%; --end-x: 15%; animation-delay: 0s;">🔥</div>
+    <div class="fire-emoji" style="--start-x: 20%; --end-x: 30%; animation-delay: 1s;">🔥</div>
+    <div class="fire-emoji" style="--start-x: 35%; --end-x: 45%; animation-delay: 2s;">🔥</div>
+    <div class="fire-emoji" style="--start-x: 50%; --end-x: 60%; animation-delay: 3s;">🔥</div>
+    <div class="fire-emoji" style="--start-x: 65%; --end-x: 75%; animation-delay: 4s;">🔥</div>
+    <div class="fire-emoji" style="--start-x: 80%; --end-x: 90%; animation-delay: 5s;">🔥</div>
+    <div class="fire-emoji" style="--start-x: 95%; --end-x: 105%; animation-delay: 6s;">🔥</div>
+
+    <!-- Основное меню -->
+    <div class="container">
+        <h1 class="title">RGR Coin</h1>
+        <div class="user-info">
+            <input type="text" id="username" placeholder="Введите ваш никнейм" class="input-field">
+            <button id="saveUsername" class="button">Сохранить</button>
+        </div>
+        <div class="coin-section">
+            <p id="coinCount">Ваши коины: 0</p>
+            <button id="collectButton" class="button collect-button" disabled>Собрать +1 RGR</button>
+            <p id="timer">Следующее нажатие через: 60:00</p>
+        </div>
+        <button id="showUpgrades" class="button">Улучшения</button>
+        <button id="showLeaderboard" class="button">Таблица лидеров</button>
+    </div>
+
+    <!-- Кнопка "О проекте" -->
+    <button class="button about-button" id="aboutButton">О проекте</button>
+
+    <!-- Версия внизу справа -->
+    <div class="version">v.0.1</div>
+
+    <!-- Модальное окно "О проекте" -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <h2>О проекте</h2>
+            <p>
+                RGR Coin — совсем молодой проект, который будет стремиться выжить и вырасти. 
+                Все силы в данный момент направлены на новый контент и реализацию конвертации RGR в TON!
+            </p>
+            <button class="close-button" id="closeAboutModal">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно "Улучшения" -->
+    <div id="upgradesModal" class="modal">
+        <div class="modal-content">
+            <h2>Улучшения</h2>
+            <div class="upgrade-item">
+                <p>Увеличение коинов за клик (+0.09)</p>
+                <p>Цена: <span id="upgrade1Cost">1</span> RGR</p>
+                <button id="buyUpgrade1" class="button">Купить</button>
+            </div>
+            <div class="upgrade-item">
+                <p>Уменьшение таймера на 10 секунд</p>
+                <p>Цена: <span id="upgrade2Cost">1</span> RGR</p>
+                <button id="buyUpgrade2" class="button">Купить</button>
+            </div>
+            <button class="close-button" id="closeUpgradesModal">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Модальное окно "Таблица лидеров" -->
+    <div id="leaderboardModal" class="modal">
+        <div class="modal-content">
+            <h2>Таблица лидеров</h2>
+            <ul id="leaderboardList">
+                <li>Игрок 1: 100 коинов</li>
+                <li>Игрок 2: 80 коинов</li>
+            </ul>
+            <button class="close-button" id="closeLeaderboardModal">Закрыть</button>
+        </div>
+    </div>
+
+    <script>
+        // Данные игры
+        let coins = 0;
+        let lastClickTime = 0;
+        let username = '';
+        let cooldown = 60 * 60 * 1000; // 1 час в миллисекундах
+        let coinsPerClick = 1; // Базовое количество коинов за клик
+        let timerReduction = 0; // Уменьшение таймера в секундах
+        let upgrade1Cost = 1; // Цена первого улучшения
+        let upgrade2Cost = 1; // Цена второго улучшения
+
+        // Модальные окна
+        const aboutModal = document.getElementById('aboutModal');
+        const upgradesModal = document.getElementById('upgradesModal');
+        const leaderboardModal = document.getElementById('leaderboardModal');
+
+        // Открытие модальных окон
+        document.getElementById('aboutButton').addEventListener('click', () => {
+            aboutModal.style.display = 'flex';
+        });
+
+        document.getElementById('showUpgrades').addEventListener('click', () => {
+            upgradesModal.style.display = 'flex';
+        });
+
+        document.getElementById('showLeaderboard').addEventListener('click', () => {
+            leaderboardModal.style.display = 'flex';
+        });
+
+        // Закрытие модальных окон
+        document.getElementById('closeAboutModal').addEventListener('click', () => {
+            aboutModal.style.display = 'none';
+        });
+
+        document.getElementById('closeUpgradesModal').addEventListener('click', () => {
+            upgradesModal.style.display = 'none';
+        });
+
+        document.getElementById('closeLeaderboardModal').addEventListener('click', () => {
+            leaderboardModal.style.display = 'none';
+        });
+
+        // Сохранение никнейма
+        document.getElementById('saveUsername').addEventListener('click', () => {
+            username = document.getElementById('username').value.trim();
+            if (username) {
+                alert(`Никнейм "${username}" сохранен!`);
+                document.getElementById('collectButton').disabled = false;
+            } else {
+                alert('Введите никнейм!');
+            }
+        });
+
+        // Нажатие на кнопку сбора коинов
+        document.getElementById('collectButton').addEventListener('click', () => {
+            const currentTime = Date.now();
+            if (currentTime - lastClickTime >= cooldown - timerReduction * 1000) {
+                coins += coinsPerClick;
+                lastClickTime = currentTime;
+                updateCoinCount();
+                startTimer();
+            } else {
+                alert('Подождите, пока таймер истечет!');
+            }
+        });
+
+        // Покупка улучшений
+        document.getElementById('buyUpgrade1').addEventListener('click', () => {
+            if (coins >= upgrade1Cost) {
+                coins -= upgrade1Cost;
+                coinsPerClick += 0.09;
+                upgrade1Cost += 1;
+                updateCoinCount();
+                document.getElementById('upgrade1Cost').textContent = upgrade1Cost;
+                alert('Улучшение куплено! Теперь вы получаете больше коинов за клик.');
+            } else {
+                alert('Недостаточно коинов!');
+            }
+        });
+
+        document.getElementById('buyUpgrade2').addEventListener('click', () => {
+            if (coins >= upgrade2Cost) {
+                coins -= upgrade2Cost;
+                timerReduction += 10;
+                upgrade2Cost += 1;
+                updateCoinCount();
+                document.getElementById('upgrade2Cost').textContent = upgrade2Cost;
+                alert('Улучшение куплено! Таймер уменьшен на 10 секунд.');
+            } else {
+                alert('Недостаточно коинов!');
+            }
+        });
+
+        // Обновление количества коинов
+        function updateCoinCount() {
+            document.getElementById('coinCount').textContent = `Ваши коины: ${coins.toFixed(2)}`;
+        }
+
+        // Запуск таймера
+        function startTimer() {
+            const timerElement = document.getElementById('timer');
+            let remainingTime = (cooldown - timerReduction * 1000) / 1000;
+            const interval = setInterval(() => {
+                remainingTime--;
+                const minutes = Math.floor(remainingTime / 60);
+                const seconds = remainingTime % 60;
+                timerElement.textContent = `Следующее нажатие через: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                if (remainingTime <= 0) {
+                    clearInterval(interval);
+                    timerElement.textContent = 'Готово! Можете снова нажать.';
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
