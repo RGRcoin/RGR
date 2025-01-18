@@ -415,6 +415,15 @@
         const chatInput = document.getElementById('chat-input');
         const sendMessageButton = document.getElementById('send-message');
 
+        // Функция для проверки домена
+        function checkDomainError(error) {
+            if (error.code === 'auth/unauthorized-domain') {
+                alert("Ошибка: домен не добавлен в Firebase Console. Добавь https://rgrcoin.github.io в список разрешенных доменов.");
+                return true; // Ошибка связана с доменом
+            }
+            return false; // Ошибка не связана с доменом
+        }
+
         // Функция для входа через Google
         googleSignInButton.addEventListener('click', () => {
             signInWithPopup(auth, provider)
@@ -425,12 +434,14 @@
                     showGameInterface();
                 })
                 .catch((error) => {
-                    if (error.code === 'auth/network-request-failed' || error.code === 'auth/cancelled-popup-request') {
-                        // Если popup не сработал, используем redirect
-                        signInWithRedirect(auth, provider);
-                    } else {
-                        console.error("Ошибка входа через Google:", error);
-                        alert("Ошибка входа через Google: " + error.message);
+                    if (!checkDomainError(error)) {
+                        if (error.code === 'auth/network-request-failed' || error.code === 'auth/cancelled-popup-request') {
+                            // Если popup не сработал, используем redirect
+                            signInWithRedirect(auth, provider);
+                        } else {
+                            console.error("Ошибка входа через Google:", error);
+                            alert("Ошибка входа через Google: " + error.message);
+                        }
                     }
                 });
         });
@@ -446,8 +457,10 @@
                 }
             })
             .catch((error) => {
-                console.error("Ошибка входа через Google (redirect):", error);
-                alert("Ошибка входа через Google: " + error.message);
+                if (!checkDomainError(error)) {
+                    console.error("Ошибка входа через Google (redirect):", error);
+                    alert("Ошибка входа через Google: " + error.message);
+                }
             });
 
         // Показываем интерфейс игры после авторизации
