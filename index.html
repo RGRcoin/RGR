@@ -282,12 +282,12 @@
             }
         }
 
-        /* Стили для формы авторизации */
-        #auth-container {
+        /* Стили для формы выбора ника */
+        #nickname-container {
             display: block;
         }
 
-        #auth-container input {
+        #nickname-container input {
             padding: 10px;
             margin: 5px;
             border: 1px solid #1abc9c;
@@ -298,7 +298,7 @@
             width: calc(100% - 22px);
         }
 
-        #auth-container button {
+        #nickname-container button {
             width: 100%;
             margin: 5px 0;
         }
@@ -306,16 +306,14 @@
 </head>
 <body>
     <div class="container">
-        <!-- Форма авторизации -->
-        <div id="auth-container">
-            <h2>Вход</h2>
+        <!-- Форма выбора ника -->
+        <div id="nickname-container">
+            <h2>Выберите никнейм</h2>
             <input type="text" id="nickname-input" placeholder="Никнейм">
-            <input type="password" id="password-input" placeholder="Пароль">
-            <button class="button" id="login-button">Войти</button>
-            <button class="button" id="change-nickname-button">Сменить ник</button>
+            <button class="button" id="set-nickname">Сохранить</button>
         </div>
 
-        <!-- Основной интерфейс игры (скрыт до авторизации) -->
+        <!-- Основной интерфейс игры (скрыт до выбора ника) -->
         <div id="game-container" style="display: none;">
             <h1>AFK Фармилка</h1>
             <div class="nickname-display" id="nickname-display"></div>
@@ -361,6 +359,7 @@
         </div>
     </div>
 
+    <!-- Подключаем Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { 
@@ -387,6 +386,7 @@
         // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        console.log("Firebase initialized successfully!");
 
         // Переменные игры
         let tugriks = 0;
@@ -397,15 +397,13 @@
         let clickCost = 100;
         let passiveCost = 100;
         let nickname = '';
-        let password = '';
+        let playerId = localStorage.getItem('playerId');
 
         // Элементы интерфейса
-        const authContainer = document.getElementById('auth-container');
+        const nicknameContainer = document.getElementById('nickname-container');
         const gameContainer = document.getElementById('game-container');
         const nicknameInput = document.getElementById('nickname-input');
-        const passwordInput = document.getElementById('password-input');
-        const loginButton = document.getElementById('login-button');
-        const changeNicknameButton = document.getElementById('change-nickname-button');
+        const setNicknameButton = document.getElementById('set-nickname');
         const nicknameDisplay = document.getElementById('nickname-display');
         const tugriksDisplay = document.getElementById('tugriks');
         const collectButton = document.getElementById('collect-tugriks');
@@ -413,138 +411,32 @@
         const chatInput = document.getElementById('chat-input');
         const sendMessageButton = document.getElementById('send-message');
 
-        // Проверяем, есть ли сохраненные данные в localStorage
-        const savedNickname = localStorage.getItem('farmilka_nickname');
-        const savedPassword = localStorage.getItem('farmilka_password');
-
-        if (savedNickname && savedPassword) {
-            // Пытаемся автоматически авторизовать пользователя
-            get(ref(database, `users/${savedNickname}`))
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        const userData = snapshot.val();
-                        if (userData.password === savedPassword) {
-                            nickname = savedNickname;
-                            password = savedPassword;
-                            showGameInterface();
-                        } else {
-                            // Пароль не совпадает, очищаем localStorage
-                            localStorage.removeItem('farmilka_nickname');
-                            localStorage.removeItem('farmilka_password');
-                        }
-                    } else {
-                        // Пользователь не существует, очищаем localStorage
-                        localStorage.removeItem('farmilka_nickname');
-                        localStorage.removeItem('farmilka_password');
-                    }
-                })
-                .catch((error) => {
-                    console.error("Ошибка при автоматической авторизации:", error);
-                });
+        // Генерация уникального идентификатора игрока
+        if (!playerId) {
+            playerId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('playerId', playerId);
         }
 
-        // Функция для входа
-        loginButton.addEventListener('click', () => {
+        // Выбор ника
+        setNicknameButton.addEventListener('click', () => {
             const enteredNickname = nicknameInput.value.trim();
-            const enteredPassword = passwordInput.value.trim();
-
-            if (!enteredNickname || !enteredPassword) {
-                alert("Пожалуйста, введите ник и пароль!");
+            if (!enteredNickname) {
+                alert("Пожалуйста, введите никнейм!");
                 return;
             }
 
-            // Проверяем, существует ли пользователь
-            get(ref(database, `users/${enteredNickname}`))
-                .then((snapshot) => {
-                    if (snapshot.exists()) {
-                        // Пользователь существует, проверяем пароль
-                        const userData = snapshot.val();
-                        if (userData.password === enteredPassword) {
-                            nickname = enteredNickname;
-                            password = enteredPassword;
-
-                            // Сохраняем данные в localStorage
-                            localStorage.setItem('farmilka_nickname', nickname);
-                            localStorage.setItem('farmilka_password', password);
-
-                            showGameInterface();
-                        } else {
-                            alert("Неверный пароль!");
-                        }
-                    } else {
-                        // Пользователь не существует, создаем нового
-                        set(ref(database, `users/${enteredNickname}`), {
-                            password: enteredPassword,
-                            tugriks: 0,
-                            clickIncome: 1,
-                            passiveIncome: 0,
-                            clickLevel: 1,
-                            passiveLevel: 0,
-                            clickCost: 100,
-                            passiveCost: 100
-                        }).then(() => {
-                            nickname = enteredNickname;
-                            password = enteredPassword;
-
-                            // Сохраняем данные в localStorage
-                            localStorage.setItem('farmilka_nickname', nickname);
-                            localStorage.setItem('farmilka_password', password);
-
-                            showGameInterface();
-                        });
-                    }
-                })
-                .catch((error) => {
-                    console.error("Ошибка при входе:", error);
-                    alert("Ошибка при входе: " + error.message);
-                });
-        });
-
-        // Функция для смены ника
-        changeNicknameButton.addEventListener('click', () => {
-            const newNickname = prompt("Введите новый никнейм:");
-            if (newNickname && newNickname.trim() !== "") {
-                // Удаляем старые данные
-                set(ref(database, `users/${nickname}`), null)
-                    .then(() => {
-                        // Сохраняем новые данные
-                        set(ref(database, `users/${newNickname}`), {
-                            password: password,
-                            tugriks: tugriks,
-                            clickIncome: clickIncome,
-                            passiveIncome: passiveIncome,
-                            clickLevel: clickLevel,
-                            passiveLevel: passiveLevel,
-                            clickCost: clickCost,
-                            passiveCost: passiveCost
-                        }).then(() => {
-                            nickname = newNickname;
-                            nicknameDisplay.innerText = `Ник: ${nickname}`;
-
-                            // Обновляем данные в localStorage
-                            localStorage.setItem('farmilka_nickname', nickname);
-
-                            alert("Никнейм успешно изменен!");
-                        });
-                    })
-                    .catch((error) => {
-                        console.error("Ошибка при смене ника:", error);
-                        alert("Ошибка при смене ника: " + error.message);
-                    });
-            }
-        });
-
-        // Показываем интерфейс игры после авторизации
-        function showGameInterface() {
-            authContainer.style.display = 'none';
+            nickname = enteredNickname;
+            localStorage.setItem('nickname', nickname);
+            nicknameContainer.style.display = 'none';
             gameContainer.style.display = 'block';
             nicknameDisplay.innerText = `Ник: ${nickname}`;
             loadPlayerData();
-        }
+            initChat();
+        });
 
         // Загружаем данные игрока
         function loadPlayerData() {
-            get(ref(database, `users/${nickname}`))
+            get(ref(database, `players/${playerId}`))
                 .then((snapshot) => {
                     if (snapshot.exists()) {
                         const data = snapshot.val();
@@ -556,6 +448,17 @@
                         clickCost = data.clickCost;
                         passiveCost = data.passiveCost;
                         updateUI();
+                    } else {
+                        // Если игрок новый, создаем запись в базе данных
+                        set(ref(database, `players/${playerId}`), {
+                            tugriks: 0,
+                            clickIncome: 1,
+                            passiveIncome: 0,
+                            clickLevel: 1,
+                            passiveLevel: 0,
+                            clickCost: 100,
+                            passiveCost: 100
+                        });
                     }
                 })
                 .catch((error) => {
@@ -574,8 +477,63 @@
             document.getElementById('passive-cost').innerText = passiveCost;
         }
 
-        // Остальной код игры (функции для сбора Тугриков, улучшений, чата и т.д.)
-        // ... (остальной код остаётся без изменений)
+        // Сохраняем данные игрока
+        function savePlayerData() {
+            set(ref(database, `players/${playerId}`), {
+                tugriks: tugriks,
+                clickIncome: clickIncome,
+                passiveIncome: passiveIncome,
+                clickLevel: clickLevel,
+                passiveLevel: passiveLevel,
+                clickCost: clickCost,
+                passiveCost: passiveCost
+            }).catch((error) => {
+                console.error("Ошибка при сохранении данных:", error);
+            });
+        }
+
+        // Инициализация чата
+        function initChat() {
+            const chatRef = ref(database, 'chat');
+
+            // Отправка сообщения
+            sendMessageButton.addEventListener('click', () => {
+                const message = chatInput.value.trim();
+                if (message) {
+                    push(chatRef, {
+                        nickname: nickname,
+                        message: message,
+                        timestamp: serverTimestamp()
+                    });
+                    chatInput.value = '';
+                }
+            });
+
+            // Отображение сообщений в реальном времени
+            onChildAdded(chatRef, (snapshot) => {
+                const message = snapshot.val();
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('message');
+                messageElement.innerHTML = `
+                    <span class="nickname">${message.nickname}</span>
+                    <span class="time">${new Date(message.timestamp).toLocaleTimeString()}</span>
+                    <div>${message.message}</div>
+                `;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+        }
+
+        // Загружаем данные при запуске игры
+        const savedNickname = localStorage.getItem('nickname');
+        if (savedNickname) {
+            nickname = savedNickname;
+            nicknameContainer.style.display = 'none';
+            gameContainer.style.display = 'block';
+            nicknameDisplay.innerText = `Ник: ${nickname}`;
+            loadPlayerData();
+            initChat();
+        }
     </script>
 </body>
 </html>
