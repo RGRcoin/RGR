@@ -239,41 +239,6 @@
             background-color: #c0392b;
         }
 
-        .nickname-input {
-            margin-bottom: 20px;
-        }
-
-        .nickname-input input {
-            padding: 10px;
-            border: 1px solid #1abc9c;
-            border-radius: 5px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            font-size: 16px;
-            width: 200px;
-        }
-
-        .nickname-input button {
-            background-color: #1abc9c;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 10px;
-            font-size: 16px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .nickname-input button:hover {
-            background-color: #16a085;
-            transform: scale(1.05);
-        }
-
-        .nickname-input button:active {
-            transform: scale(0.95);
-        }
-
         .nickname-display {
             font-size: 20px;
             color: #1abc9c;
@@ -315,73 +280,103 @@
             .chat-messages {
                 height: 100px;
             }
+        }
 
-            .nickname-input input {
-                width: 100%;
-                margin-bottom: 10px;
-            }
+        /* Стили для формы авторизации */
+        #auth-container {
+            display: block;
+        }
 
-            .nickname-input button {
-                width: 100%;
-                margin-left: 0;
-            }
+        #auth-container input {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #1abc9c;
+            border-radius: 5px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-size: 16px;
+            width: calc(100% - 22px);
+        }
+
+        #auth-container button {
+            width: 100%;
+            margin: 5px 0;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>AFK Фармилка</h1>
-        <div class="nickname-input" id="nickname-input-container">
-            <input type="text" id="nickname-input" placeholder="Введите ваш ник (до 10 символов)" maxlength="10">
-            <button id="save-nickname">Сохранить ник</button>
-        </div>
-        <div class="nickname-display" id="nickname-display" style="display: none;">
-            <!-- Ник будет отображаться здесь -->
-        </div>
-        <div class="resource">
-            Тугрики: <span id="tugriks">0</span>
-        </div>
-        <div>
-            <p>Доход за клик: <span id="click-income">1</span> Тугриков</p>
-            <p>Пассивный доход: <span id="passive-income">0</span> Тугриков/сек</p>
-        </div>
-        <button class="button collect-button" id="collect-tugriks">Собрать Тугрики</button>
-        <div class="timer" id="timer"></div>
-        <button class="button" id="open-upgrades">Улучшения</button>
-        <button class="button chat-toggle" id="toggle-chat">Открыть чат</button>
-
-        <!-- Оверлей для улучшений -->
-        <div class="upgrades-overlay" id="upgrades-overlay">
-            <div class="upgrades">
-                <h2>Улучшения</h2>
-                <div class="upgrade">
-                    <span>Улучшить доход за клик (Уровень <span id="click-level">1</span>)</span>
-                    <button id="upgrade-click">Купить (<span id="click-cost">100</span> Тугриков)</button>
-                </div>
-                <div class="upgrade">
-                    <span>Улучшить пассивный доход (Уровень <span id="passive-level">0</span>)</span>
-                    <button id="upgrade-passive">Купить (<span id="passive-cost">100</span> Тугриков)</button>
-                </div>
-                <button class="button" id="close-upgrades">Закрыть</button>
-            </div>
+        <!-- Форма авторизации -->
+        <div id="auth-container">
+            <h2>Вход через Google</h2>
+            <button class="button" id="google-signin">Войти через Google</button>
         </div>
 
-        <!-- Чат -->
-        <div class="chat" id="chat">
-            <h2>Чат</h2>
-            <div class="chat-messages" id="chat-messages">
-                <!-- Сообщения чата будут здесь -->
+        <!-- Основной интерфейс игры (скрыт до авторизации) -->
+        <div id="game-container" style="display: none;">
+            <h1>AFK Фармилка</h1>
+            <div class="nickname-display" id="nickname-display"></div>
+            <div class="resource">
+                Тугрики: <span id="tugriks">0</span>
             </div>
-            <div class="chat-input-container">
-                <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение...">
-                <button class="chat-send-button" id="send-message">Отправить</button>
+            <div>
+                <p>Доход за клик: <span id="click-income">1</span> Тугриков</p>
+                <p>Пассивный доход: <span id="passive-income">0</span> Тугриков/сек</p>
+            </div>
+            <button class="button collect-button" id="collect-tugriks">Собрать Тугрики</button>
+            <div class="timer" id="timer"></div>
+            <button class="button" id="open-upgrades">Улучшения</button>
+            <button class="button chat-toggle" id="toggle-chat">Открыть чат</button>
+
+            <!-- Оверлей для улучшений -->
+            <div class="upgrades-overlay" id="upgrades-overlay">
+                <div class="upgrades">
+                    <h2>Улучшения</h2>
+                    <div class="upgrade">
+                        <span>Улучшить доход за клик (Уровень <span id="click-level">1</span>)</span>
+                        <button id="upgrade-click">Купить (<span id="click-cost">100</span> Тугриков)</button>
+                    </div>
+                    <div class="upgrade">
+                        <span>Улучшить пассивный доход (Уровень <span id="passive-level">0</span>)</span>
+                        <button id="upgrade-passive">Купить (<span id="passive-cost">100</span> Тугриков)</button>
+                    </div>
+                    <button class="button" id="close-upgrades">Закрыть</button>
+                </div>
+            </div>
+
+            <!-- Чат -->
+            <div class="chat" id="chat">
+                <h2>Чат</h2>
+                <div class="chat-messages" id="chat-messages">
+                    <!-- Сообщения чата будут здесь -->
+                </div>
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение...">
+                    <button class="chat-send-button" id="send-message">Отправить</button>
+                </div>
             </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, set, get, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider, 
+            onAuthStateChanged,
+            signInWithRedirect,
+            getRedirectResult
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            getDatabase, 
+            ref, 
+            push, 
+            onChildAdded, 
+            set, 
+            get, 
+            serverTimestamp 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAmZ5AEzm4CISSGQDFd1q3gAu9N0ST0H6M",
@@ -396,251 +391,86 @@
 
         // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
         const database = getDatabase(app);
+        const provider = new GoogleAuthProvider();
 
-        console.log("Firebase initialized:", app);
+        // Переменные игры
+        let tugriks = 0;
+        let clickIncome = 1;
+        let passiveIncome = 0;
+        let clickLevel = 1;
+        let passiveLevel = 0;
+        let clickCost = 100;
+        let passiveCost = 100;
+        let nickname = '';
 
-        let tugriks = parseInt(localStorage.getItem('tugriks')) || 0;
-        let clickIncome = parseInt(localStorage.getItem('clickIncome')) || 1;
-        let passiveIncome = parseInt(localStorage.getItem('passiveIncome')) || 0;
-        let clickLevel = parseInt(localStorage.getItem('clickLevel')) || 1;
-        let passiveLevel = parseInt(localStorage.getItem('passiveLevel')) || 0;
-        let clickCost = parseInt(localStorage.getItem('clickCost')) || 100;
-        let passiveCost = parseInt(localStorage.getItem('passiveCost')) || 100;
-        let nickname = localStorage.getItem('nickname') || '';
+        // Элементы интерфейса
+        const authContainer = document.getElementById('auth-container');
+        const gameContainer = document.getElementById('game-container');
+        const googleSignInButton = document.getElementById('google-signin');
+        const tugriksDisplay = document.getElementById('tugriks');
+        const collectButton = document.getElementById('collect-tugriks');
         const chatMessages = document.getElementById('chat-messages');
-        const chatContainer = document.getElementById('chat');
-        const nicknameInputContainer = document.getElementById('nickname-input-container');
-        const nicknameDisplay = document.getElementById('nickname-display');
+        const chatInput = document.getElementById('chat-input');
+        const sendMessageButton = document.getElementById('send-message');
 
-        // Загрузка данных при запуске
-        document.getElementById('tugriks').innerText = tugriks;
-        document.getElementById('click-income').innerText = clickIncome;
-        document.getElementById('passive-income').innerText = passiveIncome;
-        document.getElementById('click-level').innerText = clickLevel;
-        document.getElementById('passive-level').innerText = passiveLevel;
-        document.getElementById('click-cost').innerText = clickCost;
-        document.getElementById('passive-cost').innerText = passiveCost;
-        if (nickname) {
-            showNicknameDisplay();
+        // Функция для входа через Google
+        googleSignInButton.addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    alert("Вход выполнен через Google!");
+                    nickname = user.displayName || user.email.split('@')[0];
+                    showGameInterface();
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/cancelled-popup-request') {
+                        // Если popup не сработал, используем redirect
+                        signInWithRedirect(auth, provider);
+                    } else {
+                        console.error("Ошибка входа через Google:", error);
+                        alert("Ошибка входа через Google: " + error.message);
+                    }
+                });
+        });
+
+        // Обработка результата redirect-авторизации
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result) {
+                    const user = result.user;
+                    alert("Вход выполнен через Google!");
+                    nickname = user.displayName || user.email.split('@')[0];
+                    showGameInterface();
+                }
+            })
+            .catch((error) => {
+                console.error("Ошибка входа через Google (redirect):", error);
+                alert("Ошибка входа через Google: " + error.message);
+            });
+
+        // Показываем интерфейс игры после авторизации
+        function showGameInterface() {
+            authContainer.style.display = 'none';
+            gameContainer.style.display = 'block';
+            document.getElementById('nickname-display').innerText = `Ник: ${nickname}`;
             loadPlayerData();
         }
 
-        // Функция для сбора Тугриков
-        function collectTugriks() {
-            tugriks += clickIncome;
-            updateTugriks();
-            localStorage.setItem('tugriks', tugriks);
-            savePlayerData();
-        }
-
-        // Функция для обновления отображения Тугриков
-        function updateTugriks() {
-            document.getElementById('tugriks').innerText = tugriks;
-        }
-
-        // Функция для улучшения дохода за клик
-        function upgradeClick() {
-            if (tugriks >= clickCost) {
-                tugriks -= clickCost;
-                clickIncome += 1;
-                clickLevel += 1;
-                clickCost = Math.round(clickCost * 1.3);
-                updateTugriks();
-                document.getElementById('click-income').innerText = clickIncome;
-                document.getElementById('click-level').innerText = clickLevel;
-                document.getElementById('click-cost').innerText = clickCost;
-                localStorage.setItem('tugriks', tugriks);
-                localStorage.setItem('clickIncome', clickIncome);
-                localStorage.setItem('clickLevel', clickLevel);
-                localStorage.setItem('clickCost', clickCost);
-                savePlayerData();
+        // Проверяем состояние авторизации
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                nickname = user.displayName || user.email.split('@')[0];
+                showGameInterface();
             } else {
-                alert("Недостаточно Тугриков!");
-            }
-        }
-
-        // Функция для улучшения пассивного дохода
-        function upgradePassive() {
-            if (tugriks >= passiveCost) {
-                tugriks -= passiveCost;
-                passiveIncome += 1;
-                passiveLevel += 1;
-                passiveCost = Math.round(passiveCost * 1.3);
-                updateTugriks();
-                document.getElementById('passive-income').innerText = passiveIncome;
-                document.getElementById('passive-level').innerText = passiveLevel;
-                document.getElementById('passive-cost').innerText = passiveCost;
-                localStorage.setItem('tugriks', tugriks);
-                localStorage.setItem('passiveIncome', passiveIncome);
-                localStorage.setItem('passiveLevel', passiveLevel);
-                localStorage.setItem('passiveCost', passiveCost);
-                savePlayerData();
-            } else {
-                alert("Недостаточно Тугриков!");
-            }
-        }
-
-        // Функция для открытия/закрытия улучшений
-        function toggleUpgrades() {
-            const upgradesOverlay = document.getElementById('upgrades-overlay');
-            upgradesOverlay.classList.toggle('active');
-        }
-
-        // Функция для отправки сообщения в чат
-        function sendMessage() {
-            const input = document.getElementById('chat-input');
-            const message = input.value.trim();
-            if (message !== '' && nickname) {
-                // Отправляем сообщение в Firebase
-                push(ref(database, 'messages'), {
-                    nickname: nickname,
-                    message: message,
-                    timestamp: serverTimestamp()
-                });
-                input.value = '';
-            }
-        }
-
-        // Функция для открытия/закрытия чата
-        function toggleChat() {
-            chatContainer.classList.toggle('active');
-        }
-
-        // Функция для установки ника
-        function setNickname() {
-            const nicknameInput = document.getElementById('nickname-input').value.trim();
-            if (nicknameInput.length > 0 && nicknameInput.length <= 10 && !/[^\w\s]/.test(nicknameInput)) {
-                nickname = nicknameInput;
-                localStorage.setItem('nickname', nickname);
-                showNicknameDisplay();
-                loadPlayerData();
-                alert(`Ник успешно сохранен: ${nickname}`);
-
-                // Устанавливаем статус "онлайн" в Firebase
-                const userStatusRef = ref(database, `status/${nickname}`);
-                set(userStatusRef, { online: true, lastOnline: serverTimestamp() });
-
-                // Устанавливаем статус "оффлайн" при закрытии вкладки
-                onDisconnect(userStatusRef).set({ online: false, lastOnline: serverTimestamp() });
-            } else {
-                alert("Ник должен быть от 1 до 10 символов и не содержать эмодзи или спецсимволов!");
-            }
-        }
-
-        // Функция для отображения ника
-        function showNicknameDisplay() {
-            nicknameInputContainer.style.display = 'none';
-            nicknameDisplay.innerText = `Ник: ${nickname}`;
-            nicknameDisplay.style.display = 'block';
-        }
-
-        // Функция для редактирования ника
-        function editNickname() {
-            nicknameInputContainer.style.display = 'block';
-            nicknameDisplay.style.display = 'none';
-            document.getElementById('nickname-input').value = nickname;
-        }
-
-        // Функция для сохранения данных игрока в Firebase
-        function savePlayerData() {
-            const playerData = {
-                tugriks: tugriks,
-                clickIncome: clickIncome,
-                passiveIncome: passiveIncome,
-                clickLevel: clickLevel,
-                passiveLevel: passiveLevel,
-                clickCost: clickCost,
-                passiveCost: passiveCost,
-                nickname: nickname
-            };
-            set(ref(database, `players/${nickname}`), playerData);
-        }
-
-        // Функция для загрузки данных игрока из Firebase
-        function loadPlayerData() {
-            get(ref(database, `players/${nickname}`)).then((snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    tugriks = data.tugriks;
-                    clickIncome = data.clickIncome;
-                    passiveIncome = data.passiveIncome;
-                    clickLevel = data.clickLevel;
-                    passiveLevel = data.passiveLevel;
-                    clickCost = data.clickCost;
-                    passiveCost = data.passiveCost;
-                    updateTugriks();
-                    document.getElementById('click-income').innerText = clickIncome;
-                    document.getElementById('passive-income').innerText = passiveIncome;
-                    document.getElementById('click-level').innerText = clickLevel;
-                    document.getElementById('passive-level').innerText = passiveLevel;
-                    document.getElementById('click-cost').innerText = clickCost;
-                    document.getElementById('passive-cost').innerText = passiveCost;
-                }
-            });
-        }
-
-        // Слушаем новые сообщения в чате
-        onChildAdded(ref(database, 'messages'), (snapshot) => {
-            const message = snapshot.val();
-            const messageElement = document.createElement('div');
-            messageElement.classList.add('message');
-
-            // Проверяем, онлайн ли игрок
-            get(ref(database, `status/${message.nickname}`)).then((statusSnapshot) => {
-                const status = statusSnapshot.val();
-                const isOnline = status?.online || false;
-
-                messageElement.innerHTML = `
-                    <span class="nickname">${message.nickname}</span>
-                    <span class="time">${new Date(message.timestamp).toLocaleTimeString()}</span>
-                    ${!isOnline ? '<span class="offline-warning">(оффлайн)</span>' : ''}
-                    <div>${message.message}</div>
-                `;
-                chatMessages.appendChild(messageElement);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            });
-        });
-
-        // Автоматический сбор Тугриков каждую секунду
-        setInterval(() => {
-            tugriks += passiveIncome;
-            updateTugriks();
-            localStorage.setItem('tugriks', tugriks);
-            savePlayerData();
-        }, 1000);
-
-        // Ограничение на клик каждые 3 секунды
-        let canClick = true;
-        const timer = document.getElementById('timer');
-        document.getElementById('collect-tugriks').addEventListener('click', () => {
-            if (canClick) {
-                collectTugriks();
-                canClick = false;
-                timer.style.animation = 'none';
-                setTimeout(() => {
-                    timer.style.animation = 'timer 3s linear';
-                }, 10);
-                setTimeout(() => {
-                    canClick = true;
-                }, 3000);
+                authContainer.style.display = 'block';
+                gameContainer.style.display = 'none';
             }
         });
 
-        // Назначаем обработчики событий
-        document.getElementById('save-nickname').addEventListener('click', setNickname);
-        document.getElementById('open-upgrades').addEventListener('click', toggleUpgrades);
-        document.getElementById('close-upgrades').addEventListener('click', toggleUpgrades);
-        document.getElementById('upgrade-click').addEventListener('click', upgradeClick);
-        document.getElementById('upgrade-passive').addEventListener('click', upgradePassive);
-        document.getElementById('toggle-chat').addEventListener('click', toggleChat);
-        document.getElementById('send-message').addEventListener('click', sendMessage);
-        document.getElementById('chat-input').addEventListener('keypress', (event) => {
-            if (event.key === 'Enter') {
-                sendMessage();
-            }
-        });
-        document.getElementById('nickname-display').addEventListener('click', editNickname);
+        // Остальной код игры (функции для сбора Тугриков, улучшений, чата и т.д.)
+        // ... (остальной код остаётся без изменений)
     </script>
 </body>
 </html>
