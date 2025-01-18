@@ -308,8 +308,11 @@
     <div class="container">
         <!-- Форма авторизации -->
         <div id="auth-container">
-            <h2>Вход через Google</h2>
-            <button class="button" id="google-signin">Войти через Google</button>
+            <h2>Вход</h2>
+            <input type="text" id="nickname-input" placeholder="Никнейм">
+            <input type="password" id="password-input" placeholder="Пароль">
+            <button class="button" id="login-button">Войти</button>
+            <button class="button" id="change-nickname-button">Сменить ник</button>
         </div>
 
         <!-- Основной интерфейс игры (скрыт до авторизации) -->
@@ -361,20 +364,12 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { 
-            getAuth, 
-            signInWithPopup, 
-            GoogleAuthProvider, 
-            onAuthStateChanged,
-            signInWithRedirect,
-            getRedirectResult
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { 
             getDatabase, 
             ref, 
-            push, 
-            onChildAdded, 
             set, 
             get, 
+            onChildAdded, 
+            push, 
             serverTimestamp 
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
@@ -391,9 +386,7 @@
 
         // Инициализация Firebase
         const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
         const database = getDatabase(app);
-        const provider = new GoogleAuthProvider();
 
         // Переменные игры
         let tugriks = 0;
@@ -404,83 +397,182 @@
         let clickCost = 100;
         let passiveCost = 100;
         let nickname = '';
+        let password = '';
 
         // Элементы интерфейса
         const authContainer = document.getElementById('auth-container');
         const gameContainer = document.getElementById('game-container');
-        const googleSignInButton = document.getElementById('google-signin');
+        const nicknameInput = document.getElementById('nickname-input');
+        const passwordInput = document.getElementById('password-input');
+        const loginButton = document.getElementById('login-button');
+        const changeNicknameButton = document.getElementById('change-nickname-button');
+        const nicknameDisplay = document.getElementById('nickname-display');
         const tugriksDisplay = document.getElementById('tugriks');
         const collectButton = document.getElementById('collect-tugriks');
         const chatMessages = document.getElementById('chat-messages');
         const chatInput = document.getElementById('chat-input');
         const sendMessageButton = document.getElementById('send-message');
 
-        // Функция для проверки домена
-        function checkDomainError(error) {
-            if (error.code === 'auth/unauthorized-domain') {
-                alert("Ошибка: домен не добавлен в Firebase Console. Добавь https://rgrcoin.github.io в список разрешенных доменов.");
-                return true; // Ошибка связана с доменом
-            }
-            return false; // Ошибка не связана с доменом
-        }
+        // Проверяем, есть ли сохраненные данные в localStorage
+        const savedNickname = localStorage.getItem('farmilka_nickname');
+        const savedPassword = localStorage.getItem('farmilka_password');
 
-        // Функция для входа через Google
-        googleSignInButton.addEventListener('click', () => {
-            signInWithPopup(auth, provider)
-                .then((result) => {
-                    const user = result.user;
-                    alert("Вход выполнен через Google!");
-                    nickname = user.displayName || user.email.split('@')[0];
-                    showGameInterface();
+        if (savedNickname && savedPassword) {
+            // Пытаемся автоматически авторизовать пользователя
+            get(ref(database, `users/${savedNickname}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const userData = snapshot.val();
+                        if (userData.password === savedPassword) {
+                            nickname = savedNickname;
+                            password = savedPassword;
+                            showGameInterface();
+                        } else {
+                            // Пароль не совпадает, очищаем localStorage
+                            localStorage.removeItem('farmilka_nickname');
+                            localStorage.removeItem('farmilka_password');
+                        }
+                    } else {
+                        // Пользователь не существует, очищаем localStorage
+                        localStorage.removeItem('farmilka_nickname');
+                        localStorage.removeItem('farmilka_password');
+                    }
                 })
                 .catch((error) => {
-                    if (!checkDomainError(error)) {
-                        if (error.code === 'auth/network-request-failed' || error.code === 'auth/cancelled-popup-request') {
-                            // Если popup не сработал, используем redirect
-                            signInWithRedirect(auth, provider);
+                    console.error("Ошибка при автоматической авторизации:", error);
+                });
+        }
+
+        // Функция для входа
+        loginButton.addEventListener('click', () => {
+            const enteredNickname = nicknameInput.value.trim();
+            const enteredPassword = passwordInput.value.trim();
+
+            if (!enteredNickname || !enteredPassword) {
+                alert("Пожалуйста, введите ник и пароль!");
+                return;
+            }
+
+            // Проверяем, существует ли пользователь
+            get(ref(database, `users/${enteredNickname}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        // Пользователь существует, проверяем пароль
+                        const userData = snapshot.val();
+                        if (userData.password === enteredPassword) {
+                            nickname = enteredNickname;
+                            password = enteredPassword;
+
+                            // Сохраняем данные в localStorage
+                            localStorage.setItem('farmilka_nickname', nickname);
+                            localStorage.setItem('farmilka_password', password);
+
+                            showGameInterface();
                         } else {
-                            console.error("Ошибка входа через Google:", error);
-                            alert("Ошибка входа через Google: " + error.message);
+                            alert("Неверный пароль!");
                         }
+                    } else {
+                        // Пользователь не существует, создаем нового
+                        set(ref(database, `users/${enteredNickname}`), {
+                            password: enteredPassword,
+                            tugriks: 0,
+                            clickIncome: 1,
+                            passiveIncome: 0,
+                            clickLevel: 1,
+                            passiveLevel: 0,
+                            clickCost: 100,
+                            passiveCost: 100
+                        }).then(() => {
+                            nickname = enteredNickname;
+                            password = enteredPassword;
+
+                            // Сохраняем данные в localStorage
+                            localStorage.setItem('farmilka_nickname', nickname);
+                            localStorage.setItem('farmilka_password', password);
+
+                            showGameInterface();
+                        });
                     }
+                })
+                .catch((error) => {
+                    console.error("Ошибка при входе:", error);
+                    alert("Ошибка при входе: " + error.message);
                 });
         });
 
-        // Обработка результата redirect-авторизации
-        getRedirectResult(auth)
-            .then((result) => {
-                if (result) {
-                    const user = result.user;
-                    alert("Вход выполнен через Google!");
-                    nickname = user.displayName || user.email.split('@')[0];
-                    showGameInterface();
-                }
-            })
-            .catch((error) => {
-                if (!checkDomainError(error)) {
-                    console.error("Ошибка входа через Google (redirect):", error);
-                    alert("Ошибка входа через Google: " + error.message);
-                }
-            });
+        // Функция для смены ника
+        changeNicknameButton.addEventListener('click', () => {
+            const newNickname = prompt("Введите новый никнейм:");
+            if (newNickname && newNickname.trim() !== "") {
+                // Удаляем старые данные
+                set(ref(database, `users/${nickname}`), null)
+                    .then(() => {
+                        // Сохраняем новые данные
+                        set(ref(database, `users/${newNickname}`), {
+                            password: password,
+                            tugriks: tugriks,
+                            clickIncome: clickIncome,
+                            passiveIncome: passiveIncome,
+                            clickLevel: clickLevel,
+                            passiveLevel: passiveLevel,
+                            clickCost: clickCost,
+                            passiveCost: passiveCost
+                        }).then(() => {
+                            nickname = newNickname;
+                            nicknameDisplay.innerText = `Ник: ${nickname}`;
+
+                            // Обновляем данные в localStorage
+                            localStorage.setItem('farmilka_nickname', nickname);
+
+                            alert("Никнейм успешно изменен!");
+                        });
+                    })
+                    .catch((error) => {
+                        console.error("Ошибка при смене ника:", error);
+                        alert("Ошибка при смене ника: " + error.message);
+                    });
+            }
+        });
 
         // Показываем интерфейс игры после авторизации
         function showGameInterface() {
             authContainer.style.display = 'none';
             gameContainer.style.display = 'block';
-            document.getElementById('nickname-display').innerText = `Ник: ${nickname}`;
+            nicknameDisplay.innerText = `Ник: ${nickname}`;
             loadPlayerData();
         }
 
-        // Проверяем состояние авторизации
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                nickname = user.displayName || user.email.split('@')[0];
-                showGameInterface();
-            } else {
-                authContainer.style.display = 'block';
-                gameContainer.style.display = 'none';
-            }
-        });
+        // Загружаем данные игрока
+        function loadPlayerData() {
+            get(ref(database, `users/${nickname}`))
+                .then((snapshot) => {
+                    if (snapshot.exists()) {
+                        const data = snapshot.val();
+                        tugriks = data.tugriks;
+                        clickIncome = data.clickIncome;
+                        passiveIncome = data.passiveIncome;
+                        clickLevel = data.clickLevel;
+                        passiveLevel = data.passiveLevel;
+                        clickCost = data.clickCost;
+                        passiveCost = data.passiveCost;
+                        updateUI();
+                    }
+                })
+                .catch((error) => {
+                    console.error("Ошибка при загрузке данных:", error);
+                });
+        }
+
+        // Обновляем интерфейс
+        function updateUI() {
+            tugriksDisplay.innerText = tugriks;
+            document.getElementById('click-income').innerText = clickIncome;
+            document.getElementById('passive-income').innerText = passiveIncome;
+            document.getElementById('click-level').innerText = clickLevel;
+            document.getElementById('passive-level').innerText = passiveLevel;
+            document.getElementById('click-cost').innerText = clickCost;
+            document.getElementById('passive-cost').innerText = passiveCost;
+        }
 
         // Остальной код игры (функции для сбора Тугриков, улучшений, чата и т.д.)
         // ... (остальной код остаётся без изменений)
