@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFK Фармилка</title>
     <style>
+        /* Основные стили */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #2c3e50;
@@ -16,7 +17,9 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            overflow: hidden;
         }
+
         .container {
             background-color: #34495e;
             padding: 20px;
@@ -24,16 +27,20 @@
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             width: 90%;
             max-width: 500px;
+            position: relative;
         }
+
         h1 {
             color: #1abc9c;
             margin-bottom: 20px;
         }
+
         .resource {
             font-size: 24px;
             margin: 20px 0;
             color: #f1c40f;
         }
+
         .button {
             background-color: #1abc9c;
             color: white;
@@ -43,18 +50,120 @@
             cursor: pointer;
             margin: 10px;
             font-size: 16px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
+
         .button:hover {
             background-color: #16a085;
+            transform: scale(1.05);
         }
+
+        .button:active {
+            transform: scale(0.95);
+        }
+
+        .button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .collect-button {
+            width: 100%;
+            font-size: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .collect-button::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .collect-button:disabled::after {
+            opacity: 1;
+        }
+
+        .upgrades-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .upgrades-overlay.active {
+            display: flex;
+        }
+
+        .upgrades {
+            background-color: #34495e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .upgrade {
+            background-color: #2c3e50;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .upgrade button {
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .upgrade button:hover {
+            background-color: #16a085;
+            transform: scale(1.05);
+        }
+
+        .upgrade button:active {
+            transform: scale(0.95);
+        }
+
+        .upgrade button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .chat {
             margin-top: 20px;
             display: none; /* Скрыт по умолчанию */
         }
+
         .chat.active {
             display: block; /* Показываем чат при активации */
         }
+
         .chat-messages {
             height: 150px;
             overflow-y: scroll;
@@ -65,8 +174,14 @@
             text-align: left;
             background-color: #2c3e50;
         }
+
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+        }
+
         .chat-input {
-            width: calc(100% - 22px);
+            width: calc(100% - 90px);
             padding: 10px;
             border: 1px solid #1abc9c;
             border-radius: 5px;
@@ -74,15 +189,60 @@
             color: #ecf0f1;
             font-size: 16px;
         }
+
+        .chat-send-button {
+            width: 80px;
+            background-color: #1abc9c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .chat-send-button:hover {
+            background-color: #16a085;
+            transform: scale(1.05);
+        }
+
+        .chat-send-button:active {
+            transform: scale(0.95);
+        }
+
+        .message {
+            margin-bottom: 10px;
+        }
+
+        .message .nickname {
+            font-weight: bold;
+            color: #1abc9c;
+        }
+
+        .message .time {
+            font-size: 12px;
+            color: #95a5a6;
+            margin-left: 10px;
+        }
+
+        .message .offline-warning {
+            color: #e74c3c;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
         .chat-toggle {
             background-color: #e74c3c;
         }
+
         .chat-toggle:hover {
             background-color: #c0392b;
         }
+
         .nickname-input {
             margin-bottom: 20px;
         }
+
         .nickname-input input {
             padding: 10px;
             border: 1px solid #1abc9c;
@@ -92,6 +252,7 @@
             font-size: 16px;
             width: 200px;
         }
+
         .nickname-input button {
             background-color: #1abc9c;
             color: white;
@@ -101,19 +262,69 @@
             cursor: pointer;
             margin-left: 10px;
             font-size: 16px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
+
         .nickname-input button:hover {
             background-color: #16a085;
+            transform: scale(1.05);
         }
+
+        .nickname-input button:active {
+            transform: scale(0.95);
+        }
+
         .nickname-display {
             font-size: 20px;
             color: #1abc9c;
             cursor: pointer;
             margin-bottom: 20px;
         }
+
         .nickname-display:hover {
             text-decoration: underline;
+        }
+
+        /* Анимация таймера */
+        @keyframes timer {
+            0% { width: 100%; }
+            100% { width: 0%; }
+        }
+
+        .timer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 5px;
+            background-color: #1abc9c;
+            animation: timer 3s linear;
+        }
+
+        /* Адаптивные стили для мобильных устройств */
+        @media (max-width: 600px) {
+            .container {
+                width: 100%;
+                padding: 10px;
+            }
+
+            .button {
+                width: 100%;
+                margin: 5px 0;
+            }
+
+            .chat-messages {
+                height: 100px;
+            }
+
+            .nickname-input input {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .nickname-input button {
+                width: 100%;
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -128,24 +339,49 @@
             <!-- Ник будет отображаться здесь -->
         </div>
         <div class="resource">
-            Золото: <span id="gold">0</span>
+            Тугрики: <span id="tugriks">0</span>
         </div>
-        <button class="button" id="collect-gold">Собрать золото</button>
-        <button class="button" id="upgrade-farm">Улучшить ферму (100 золота)</button>
+        <div>
+            <p>Доход за клик: <span id="click-income">1</span> Тугриков</p>
+            <p>Пассивный доход: <span id="passive-income">0</span> Тугриков/сек</p>
+        </div>
+        <button class="button collect-button" id="collect-tugriks">Собрать Тугрики</button>
+        <div class="timer" id="timer"></div>
+        <button class="button" id="open-upgrades">Улучшения</button>
         <button class="button chat-toggle" id="toggle-chat">Открыть чат</button>
 
+        <!-- Оверлей для улучшений -->
+        <div class="upgrades-overlay" id="upgrades-overlay">
+            <div class="upgrades">
+                <h2>Улучшения</h2>
+                <div class="upgrade">
+                    <span>Улучшить доход за клик (Уровень <span id="click-level">1</span>)</span>
+                    <button id="upgrade-click">Купить (<span id="click-cost">100</span> Тугриков)</button>
+                </div>
+                <div class="upgrade">
+                    <span>Улучшить пассивный доход (Уровень <span id="passive-level">0</span>)</span>
+                    <button id="upgrade-passive">Купить (<span id="passive-cost">100</span> Тугриков)</button>
+                </div>
+                <button class="button" id="close-upgrades">Закрыть</button>
+            </div>
+        </div>
+
+        <!-- Чат -->
         <div class="chat" id="chat">
             <h2>Чат</h2>
             <div class="chat-messages" id="chat-messages">
                 <!-- Сообщения чата будут здесь -->
             </div>
-            <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение...">
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение...">
+                <button class="chat-send-button" id="send-message">Отправить</button>
+            </div>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getDatabase, ref, push, onChildAdded, set, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getDatabase, ref, push, onChildAdded, set, get, onDisconnect, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAmZ5AEzm4CISSGQDFd1q3gAu9N0ST0H6M",
@@ -164,8 +400,13 @@
 
         console.log("Firebase initialized:", app);
 
-        let gold = parseInt(localStorage.getItem('gold')) || 0;
-        let farmLevel = parseInt(localStorage.getItem('farmLevel')) || 1;
+        let tugriks = parseInt(localStorage.getItem('tugriks')) || 0;
+        let clickIncome = parseInt(localStorage.getItem('clickIncome')) || 1;
+        let passiveIncome = parseInt(localStorage.getItem('passiveIncome')) || 0;
+        let clickLevel = parseInt(localStorage.getItem('clickLevel')) || 1;
+        let passiveLevel = parseInt(localStorage.getItem('passiveLevel')) || 0;
+        let clickCost = parseInt(localStorage.getItem('clickCost')) || 100;
+        let passiveCost = parseInt(localStorage.getItem('passiveCost')) || 100;
         let nickname = localStorage.getItem('nickname') || '';
         const chatMessages = document.getElementById('chat-messages');
         const chatContainer = document.getElementById('chat');
@@ -173,54 +414,91 @@
         const nicknameDisplay = document.getElementById('nickname-display');
 
         // Загрузка данных при запуске
-        document.getElementById('gold').innerText = gold;
+        document.getElementById('tugriks').innerText = tugriks;
+        document.getElementById('click-income').innerText = clickIncome;
+        document.getElementById('passive-income').innerText = passiveIncome;
+        document.getElementById('click-level').innerText = clickLevel;
+        document.getElementById('passive-level').innerText = passiveLevel;
+        document.getElementById('click-cost').innerText = clickCost;
+        document.getElementById('passive-cost').innerText = passiveCost;
         if (nickname) {
             showNicknameDisplay();
             loadPlayerData();
         }
 
-        // Функция для сбора золота
-        function collectGold() {
-            gold += farmLevel;
-            updateGold();
-            localStorage.setItem('gold', gold);
+        // Функция для сбора Тугриков
+        function collectTugriks() {
+            tugriks += clickIncome;
+            updateTugriks();
+            localStorage.setItem('tugriks', tugriks);
             savePlayerData();
         }
 
-        // Функция для улучшения фермы
-        function upgradeFarm() {
-            if (gold >= 100) {
-                gold -= 100;
-                farmLevel += 1;
-                updateGold();
-                localStorage.setItem('gold', gold);
-                localStorage.setItem('farmLevel', farmLevel);
+        // Функция для обновления отображения Тугриков
+        function updateTugriks() {
+            document.getElementById('tugriks').innerText = tugriks;
+        }
+
+        // Функция для улучшения дохода за клик
+        function upgradeClick() {
+            if (tugriks >= clickCost) {
+                tugriks -= clickCost;
+                clickIncome += 1;
+                clickLevel += 1;
+                clickCost = Math.round(clickCost * 1.3);
+                updateTugriks();
+                document.getElementById('click-income').innerText = clickIncome;
+                document.getElementById('click-level').innerText = clickLevel;
+                document.getElementById('click-cost').innerText = clickCost;
+                localStorage.setItem('tugriks', tugriks);
+                localStorage.setItem('clickIncome', clickIncome);
+                localStorage.setItem('clickLevel', clickLevel);
+                localStorage.setItem('clickCost', clickCost);
                 savePlayerData();
-                alert(`Ферма улучшена до уровня ${farmLevel}!`);
             } else {
-                alert("Недостаточно золота!");
+                alert("Недостаточно Тугриков!");
             }
         }
 
-        // Функция для обновления отображения золота
-        function updateGold() {
-            document.getElementById('gold').innerText = gold;
+        // Функция для улучшения пассивного дохода
+        function upgradePassive() {
+            if (tugriks >= passiveCost) {
+                tugriks -= passiveCost;
+                passiveIncome += 1;
+                passiveLevel += 1;
+                passiveCost = Math.round(passiveCost * 1.3);
+                updateTugriks();
+                document.getElementById('passive-income').innerText = passiveIncome;
+                document.getElementById('passive-level').innerText = passiveLevel;
+                document.getElementById('passive-cost').innerText = passiveCost;
+                localStorage.setItem('tugriks', tugriks);
+                localStorage.setItem('passiveIncome', passiveIncome);
+                localStorage.setItem('passiveLevel', passiveLevel);
+                localStorage.setItem('passiveCost', passiveCost);
+                savePlayerData();
+            } else {
+                alert("Недостаточно Тугриков!");
+            }
+        }
+
+        // Функция для открытия/закрытия улучшений
+        function toggleUpgrades() {
+            const upgradesOverlay = document.getElementById('upgrades-overlay');
+            upgradesOverlay.classList.toggle('active');
         }
 
         // Функция для отправки сообщения в чат
-        function sendMessage(event) {
-            if (event.key === 'Enter') {
-                const input = document.getElementById('chat-input');
-                const message = input.value.trim();
-                if (message !== '' && nickname) {
-                    // Отправляем сообщение в Firebase
-                    push(ref(database, 'messages'), {
-                        nickname: nickname,
-                        message: message,
-                        timestamp: Date.now()
-                    });
-                    input.value = '';
-                }
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message !== '' && nickname) {
+                // Отправляем сообщение в Firebase
+                push(ref(database, 'messages'), {
+                    nickname: nickname,
+                    message: message,
+                    timestamp: serverTimestamp()
+                });
+                input.value = '';
             }
         }
 
@@ -238,6 +516,13 @@
                 showNicknameDisplay();
                 loadPlayerData();
                 alert(`Ник успешно сохранен: ${nickname}`);
+
+                // Устанавливаем статус "онлайн" в Firebase
+                const userStatusRef = ref(database, `status/${nickname}`);
+                set(userStatusRef, { online: true, lastOnline: serverTimestamp() });
+
+                // Устанавливаем статус "оффлайн" при закрытии вкладки
+                onDisconnect(userStatusRef).set({ online: false, lastOnline: serverTimestamp() });
             } else {
                 alert("Ник должен быть от 1 до 10 символов и не содержать эмодзи или спецсимволов!");
             }
@@ -260,8 +545,13 @@
         // Функция для сохранения данных игрока в Firebase
         function savePlayerData() {
             const playerData = {
-                gold: gold,
-                farmLevel: farmLevel,
+                tugriks: tugriks,
+                clickIncome: clickIncome,
+                passiveIncome: passiveIncome,
+                clickLevel: clickLevel,
+                passiveLevel: passiveLevel,
+                clickCost: clickCost,
+                passiveCost: passiveCost,
                 nickname: nickname
             };
             set(ref(database, `players/${nickname}`), playerData);
@@ -272,9 +562,20 @@
             get(ref(database, `players/${nickname}`)).then((snapshot) => {
                 const data = snapshot.val();
                 if (data) {
-                    gold = data.gold;
-                    farmLevel = data.farmLevel;
-                    updateGold();
+                    tugriks = data.tugriks;
+                    clickIncome = data.clickIncome;
+                    passiveIncome = data.passiveIncome;
+                    clickLevel = data.clickLevel;
+                    passiveLevel = data.passiveLevel;
+                    clickCost = data.clickCost;
+                    passiveCost = data.passiveCost;
+                    updateTugriks();
+                    document.getElementById('click-income').innerText = clickIncome;
+                    document.getElementById('passive-income').innerText = passiveIncome;
+                    document.getElementById('click-level').innerText = clickLevel;
+                    document.getElementById('passive-level').innerText = passiveLevel;
+                    document.getElementById('click-cost').innerText = clickCost;
+                    document.getElementById('passive-cost').innerText = passiveCost;
                 }
             });
         }
@@ -283,25 +584,62 @@
         onChildAdded(ref(database, 'messages'), (snapshot) => {
             const message = snapshot.val();
             const messageElement = document.createElement('div');
-            messageElement.innerText = `${message.nickname}: ${message.message}`;
-            chatMessages.appendChild(messageElement);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            messageElement.classList.add('message');
+
+            // Проверяем, онлайн ли игрок
+            get(ref(database, `status/${message.nickname}`)).then((statusSnapshot) => {
+                const status = statusSnapshot.val();
+                const isOnline = status?.online || false;
+
+                messageElement.innerHTML = `
+                    <span class="nickname">${message.nickname}</span>
+                    <span class="time">${new Date(message.timestamp).toLocaleTimeString()}</span>
+                    ${!isOnline ? '<span class="offline-warning">(оффлайн)</span>' : ''}
+                    <div>${message.message}</div>
+                `;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
         });
 
-        // Автоматический сбор золота каждую минуту
+        // Автоматический сбор Тугриков каждую секунду
         setInterval(() => {
-            gold += farmLevel;
-            updateGold();
-            localStorage.setItem('gold', gold);
+            tugriks += passiveIncome;
+            updateTugriks();
+            localStorage.setItem('tugriks', tugriks);
             savePlayerData();
-        }, 60000);
+        }, 1000);
+
+        // Ограничение на клик каждые 3 секунды
+        let canClick = true;
+        const timer = document.getElementById('timer');
+        document.getElementById('collect-tugriks').addEventListener('click', () => {
+            if (canClick) {
+                collectTugriks();
+                canClick = false;
+                timer.style.animation = 'none';
+                setTimeout(() => {
+                    timer.style.animation = 'timer 3s linear';
+                }, 10);
+                setTimeout(() => {
+                    canClick = true;
+                }, 3000);
+            }
+        });
 
         // Назначаем обработчики событий
         document.getElementById('save-nickname').addEventListener('click', setNickname);
-        document.getElementById('collect-gold').addEventListener('click', collectGold);
-        document.getElementById('upgrade-farm').addEventListener('click', upgradeFarm);
+        document.getElementById('open-upgrades').addEventListener('click', toggleUpgrades);
+        document.getElementById('close-upgrades').addEventListener('click', toggleUpgrades);
+        document.getElementById('upgrade-click').addEventListener('click', upgradeClick);
+        document.getElementById('upgrade-passive').addEventListener('click', upgradePassive);
         document.getElementById('toggle-chat').addEventListener('click', toggleChat);
-        document.getElementById('chat-input').addEventListener('keypress', sendMessage);
+        document.getElementById('send-message').addEventListener('click', sendMessage);
+        document.getElementById('chat-input').addEventListener('keypress', (event) => {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        });
         document.getElementById('nickname-display').addEventListener('click', editNickname);
     </script>
 </body>
