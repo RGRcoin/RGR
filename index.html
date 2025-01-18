@@ -458,6 +458,8 @@
                             passiveLevel: 0,
                             clickCost: 100,
                             passiveCost: 100
+                        }).catch((error) => {
+                            console.error("Ошибка при создании записи:", error);
                         });
                     }
                 })
@@ -504,6 +506,8 @@
                         nickname: nickname,
                         message: message,
                         timestamp: serverTimestamp()
+                    }).catch((error) => {
+                        console.error("Ошибка при отправке сообщения:", error);
                     });
                     chatInput.value = '';
                 }
