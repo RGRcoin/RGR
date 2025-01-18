@@ -425,7 +425,7 @@
                     showGameInterface();
                 })
                 .catch((error) => {
-                    if (error.code === 'auth/cancelled-popup-request') {
+                    if (error.code === 'auth/network-request-failed' || error.code === 'auth/cancelled-popup-request') {
                         // Если popup не сработал, используем redirect
                         signInWithRedirect(auth, provider);
                     } else {
