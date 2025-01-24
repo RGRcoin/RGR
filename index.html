@@ -8,7 +8,7 @@
         /* Основные стили */
         body {
             -webkit-user-select: none;
-            -moz-user-select: none; 
+            -moz-user-select: none;
             -ms-user-select: none;
             user-select: none;
             touch-action: none;
@@ -96,7 +96,7 @@
             padding: 10px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
             background-color: #1abc9c;
             color: white;
             border: none;
@@ -104,7 +104,6 @@
 
         .controls button:hover {
             background-color: #16a085;
-            transform: scale(1.05);
         }
 
         .controls button:active {
@@ -114,29 +113,29 @@
         .farm-button-container {
             position: fixed;
             bottom: 0;
-            left: 0;
-            width: 100%;
+            left: 10px; /* Отступ слева */
+            right: 10px; /* Отступ справа */
+            width: calc(100% - 20px); /* Ширина контейнера с учётом отступов */
             background-color: #34495e;
             padding: 10px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
             display: flex;
-            justify-content: center;
-            align-items: center;
+            align-items: center; /* Выравниваем кнопку по вертикали */
         }
 
         .farm-button {
-            width: 90%;
-            max-width: 500px;
+            width: 95%; /* Кнопка занимает всю ширину контейнера */
             font-size: 20px;
             padding: 15px;
             border-radius: 5px;
-            position: relative;
+            position: fixed;
+	    bottom: 10px;
+	    right: 10px;
             background-color: #1abc9c;
             color: white;
             border: none;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-left: -20px;
+            transition: background-color 0.3s ease;
         }
 
         .farm-button:disabled {
@@ -146,7 +145,6 @@
 
         .farm-button:hover:not(:disabled) {
             background-color: #16a085;
-            transform: scale(1.05);
         }
 
         .farm-button:active:not(:disabled) {
@@ -178,205 +176,6 @@
         @keyframes timer {
             0% { width: 100%; }
             100% { width: 0%; }
-        }
-
-        /* Мини-игра */
-        #minigame-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 1000;
-        }
-
-        #game-map {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: #2c3e50;
-            border: 2px solid #1abc9c;
-        }
-
-        #player {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            transition: all 0.1s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            color: red;
-        }
-
-        .building {
-            position: absolute;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            font-size: 12px;
-            color: white;
-            border: 2px solid #1abc9c;
-            background-color: #34495e;
-        }
-
-        .building.farm {
-            background-color: #27ae60;
-        }
-
-        .building.lumbermill {
-            background-color: #f39c12;
-        }
-
-        .building.mine {
-            background-color: #7f8c8d;
-        }
-
-        .building span {
-            margin-top: 5px;
-        }
-
-        /* Джойстик */
-        #joystick-container {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 100px;
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            touch-action: none;
-        }
-
-        #joystick {
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #joystick-handle {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 50%;
-            position: absolute;
-            transition: none;
-        }
-
-        /* Кнопка выхода */
-        #exit-minigame {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 10px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        /* Кнопки строительства и рынка */
-        #minigame-controls {
-            position: absolute;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-        }
-
-        #minigame-controls button {
-            padding: 10px;
-            background-color: #1abc9c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        /* Окно рынка */
-        #market-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #market-window {
-            background: #34495e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        #market-window h2 {
-            color: #1abc9c;
-            margin-bottom: 20px;
-        }
-
-        #market-window p {
-            color: #ecf0f1;
-            margin: 10px 0;
-        }
-
-        #market-window input {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #1abc9c;
-            border-radius: 5px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            font-size: 16px;
-        }
-
-        #market-window button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1abc9c;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin: 5px 0;
-        }
-
-        #market-window button:hover {
-            background-color: #16a085;
-            transform: scale(1.05);
-        }
-
-        #market-window button:active {
-            transform: scale(0.95);
         }
 
         /* Оверлей для улучшений */
@@ -424,12 +223,11 @@
             border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
         .upgrade button:hover {
             background-color: #16a085;
-            transform: scale(1.05);
         }
 
         .upgrade button:active {
@@ -439,7 +237,6 @@
         .upgrade button:disabled {
             background-color: #95a5a6;
             cursor: not-allowed;
-            transform: none;
         }
 
         /* Чат */
@@ -454,9 +251,8 @@
             background-color: #34495e;
             padding: 10px;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-            z-index: 999;
+            z-index: 1000;
             border-radius: 15px;
-            cursor: move;
         }
 
         .chat.active {
@@ -484,12 +280,11 @@
             padding: 5px 10px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
         .chat-close-button:hover {
             background-color: #c0392b;
-            transform: scale(1.05);
         }
 
         .chat-close-button:active {
@@ -530,12 +325,11 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
         .chat-send-button:hover {
             background-color: #16a085;
-            transform: scale(1.05);
         }
 
         .chat-send-button:active {
@@ -566,8 +360,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            display: flex;
+            z-index: 1000;
             justify-content: center;
             align-items: center;
         }
@@ -601,62 +394,15 @@
             color: white;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
             margin: 5px 0;
         }
 
         #help-window button:hover {
             background-color: #16a085;
-            transform: scale(1.05);
         }
 
         #help-window button:active {
-            transform: scale(0.95);
-        }
-
-        /* Кнопка входа в мини-игру */
-        #open-minigame {
-            position: fixed;
-            bottom: 180px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 24px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #1abc9c;
-            transition: none;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1); }
-            100% { transform: translateX(-50%) scale(1); }
-        }
-
-        /* Кнопка уничтожения */
-        .destroy-button {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            position: absolute;
-            top: -30px;
-            left: 0;
-            display: none;
-        }
-
-        .destroy-button:hover {
-            background-color: #c0392b;
-            transform: scale(1.05);
-        }
-
-        .destroy-button:active {
             transform: scale(0.95);
         }
 
@@ -673,16 +419,193 @@
             height: 40px;
             font-size: 20px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
         }
 
         #help-button:hover {
             background-color: #16a085;
-            transform: scale(1.05);
         }
 
         #help-button:active {
             transform: scale(0.95);
+        }
+
+        /* Окно добычи родия */
+        #mining-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #mining-window {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        #mining-window h2 {
+            color: #1abc9c;
+            margin-bottom: 20px;
+        }
+
+        .rhodium-blocks {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .rhodium-block {
+            width: 80px;
+            height: 80px;
+            background-color: #7f8c8d;
+            border: 2px solid #1abc9c;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .rhodium-block:active {
+            transform: scale(0.95);
+        }
+
+        .rhodium-block.disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        #mining-window button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 5px 0;
+        }
+
+        #mining-window button:hover {
+            background-color: #16a085;
+        }
+
+        #mining-window button:active {
+            transform: scale(0.95);
+        }
+
+        /* Окно продажи родия */
+        #sell-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #sell-window {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        #sell-window h2 {
+            color: #1abc9c;
+            margin-bottom: 20px;
+        }
+
+        #sell-window input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #1abc9c;
+            border-radius: 5px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            font-size: 16px;
+        }
+
+        #sell-window button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 5px 0;
+        }
+
+        #sell-window button:hover {
+            background-color: #16a085;
+        }
+
+        #sell-window button:active {
+            transform: scale(0.95);
+        }
+
+        /* Кнопки добычи и продажи */
+        .mining-sell-buttons {
+            position: fixed;
+            bottom: 180px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .mining-sell-buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .mining-sell-buttons button:hover {
+            background-color: #16a085;
+        }
+
+        .mining-sell-buttons button:active {
+            transform: scale(0.95);
+        }
+
+        #open-mining {
+            background-color: #1abc9c;
+            color: white;
+        }
+
+        #open-sell {
+            background-color: #e74c3c;
+            color: white;
         }
 
         /* Окно смены ника и уровня */
@@ -694,8 +617,7 @@
             width: 100%;
             height: 100%;
             background: rgba(0, 0, 0, 0.8);
-            z-index: 2000;
-            display: flex;
+            z-index: 1000;
             justify-content: center;
             align-items: center;
         }
@@ -735,32 +657,154 @@
             color: white;
             font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.3s ease;
             margin: 5px 0;
         }
 
         #nickname-level-window button:hover {
             background-color: #16a085;
-            transform: scale(1.05);
         }
 
         #nickname-level-window button:active {
             transform: scale(0.95);
         }
 
-        /* Подтемы справочника */
-        .help-topic {
-            margin-bottom: 10px;
-        }
-
-        .help-topic h3 {
+        /* Никнейм */
+        #nickname-display {
+            font-family: 'Pacifico', cursive;
+            font-size: 24px;
             color: #1abc9c;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
-        .help-topic p {
+        /* Таймер восстановления */
+        #timer-display {
+            position: fixed;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: #1abc9c;
+            z-index: 500;
+            display: none;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        /* Стили для рулетки */
+        #roulette-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #roulette-window {
+            background: #34495e;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+
+        #roulette-wheel {
+            display: flex;
+            overflow: hidden;
+            margin: 20px 0;
+            border: 2px solid #1abc9c;
+            border-radius: 10px;
+            background: #2c3e50;
+            position: relative;
+            height: 50px;
+        }
+
+        #roulette-wheel-inner {
+            display: flex;
+        }
+
+        #roulette-wheel-inner span {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
             color: #ecf0f1;
-            margin: 10px 0;
+            width: 40px;
+        }
+
+        /* Квадратик-индикатор */
+        #roulette-indicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 50px;
+            border: 2px solid #1abc9c;
+            background: rgba(26, 188, 156, 0.2);
+            pointer-events: none;
+            transition: left 3s ease-out;
+        }
+
+        /* Сообщение о награде */
+        #roulette-reward {
+            font-size: 18px;
+            color: #1abc9c;
+            margin-top: 10px;
+        }
+
+        /* Стили для кнопки "Играть в рулетку" */
+        #open-roulette {
+            position: fixed;
+            bottom: 240px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #1abc9c;
+            color: white;
+            outline: none; /* Убираем обводку при фокусе */
+        }
+
+        #open-roulette:hover {
+            background-color: #16a085;
+        }
+
+        #open-roulette:active {
+            transform: translateX(-50%) scale(0.95); /* Убедимся, что кнопка не смещается */
+        }
+
+        /* Стили для кнопок в окне рулетки */
+        #roulette-window button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #1abc9c;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin: 5px 0;
+        }
+
+        #roulette-window button:hover {
+            background-color: #16a085;
+        }
+
+        #roulette-window button:active {
+            transform: scale(0.95);
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -785,7 +829,7 @@
         <!-- Статистика игрока -->
         <div class="stats">
             <p>За клик: <span id="click-income">1</span></p>
-            <p>В час: <span id="passive-income">0</span></p>
+            <p>Пассивно: <span id="passive-income">0</span></p>
             <p>Перезарядка: <span id="cooldown-time">3.0</span> сек</p>
         </div>
     </div>
@@ -804,49 +848,34 @@
         </button>
     </div>
 
-    <!-- Кнопка для открытия мини-игры -->
-    <button id="open-minigame">🎮</button>
+    <!-- Кнопки добычи и продажи -->
+    <div class="mining-sell-buttons">
+        <button id="open-mining">Добывать</button>
+        <button id="open-sell">Продажа</button>
+    </div>
 
-    <!-- Мини-игра -->
-    <div id="minigame-overlay">
-        <div id="game-map">
-            <!-- Персонаж -->
-            <div id="player">+</div>
-
-            <!-- Кнопки управления в мини-игре -->
-            <div id="minigame-controls">
-                <button id="build-farm">Ферма (200 тугриков)</button>
-                <button id="build-lumbermill">Лесопилка (300 тугриков)</button>
-                <button id="build-mine">Шахта (500 тугриков)</button>
-                <button id="open-market">Рынок</button>
+    <!-- Окно добычи родия -->
+    <div id="mining-overlay">
+        <div id="mining-window">
+            <h2>Добыча родия</h2>
+            <div class="rhodium-blocks">
+                <div class="rhodium-block" data-clicks="0">Родий</div>
+                <div class="rhodium-block" data-clicks="0">Родий</div>
+                <div class="rhodium-block" data-clicks="0">Родий</div>
+                <div class="rhodium-block" data-clicks="0">Родий</div>
             </div>
-
-            <!-- Кнопка выхода -->
-            <button id="exit-minigame">Выйти</button>
-        </div>
-
-        <!-- Джойстик -->
-        <div id="joystick-container">
-            <div id="joystick">
-                <div id="joystick-handle"></div>
-            </div>
+            <button id="close-mining">Закрыть</button>
         </div>
     </div>
 
-    <!-- Окно рынка -->
-    <div id="market-overlay">
-        <div id="market-window">
-            <h2>Рынок</h2>
-            <p>Зерно: <span id="grain-amount">0</span> (Цена: 2 тугрика за единицу)</p>
-            <input type="number" id="grain-sell-amount" min="0" max="0">
-            <button id="sell-grain">Продать зерно</button>
-            <p>Дерево: <span id="wood-amount">0</span> (Цена: 3 тугрика за единицу)</p>
-            <input type="number" id="wood-sell-amount" min="0" max="0">
-            <button id="sell-wood">Продать дерево</button>
-            <p>Камень: <span id="stone-amount">0</span> (Цена: 5 тугриков за единицу)</p>
-            <input type="number" id="stone-sell-amount" min="0" max="0">
-            <button id="sell-stone">Продать камень</button>
-            <button id="close-market">Закрыть</button>
+    <!-- Окно продажи родия -->
+    <div id="sell-overlay">
+        <div id="sell-window">
+            <h2>Продажа родия</h2>
+            <p>Родий: <span id="rhodium-amount">0</span> (Цена: 15 тугриков за единицу)</p>
+            <input type="number" id="rhodium-sell-amount" min="0" max="0">
+            <button id="sell-rhodium">Продать родий</button>
+            <button id="close-sell">Закрыть</button>
         </div>
     </div>
 
@@ -860,7 +889,7 @@
             </div>
             <div class="upgrade">
                 <span>Улучшить пассивный доход (Уровень <span id="passive-level">0</span>)</span>
-                <button id="upgrade-passive">Купить (<span id="passive-cost">50</span> Тугриков)</button>
+                <button id="upgrade-passive">Купить (<span id="passive-cost">200</span> Тугриков)</button>
             </div>
             <div class="upgrade">
                 <span>Уменьшить перезарядку (Уровень <span id="cooldown-level">0</span>)</span>
@@ -890,14 +919,12 @@
         <div id="help-window">
             <h2>Справочник</h2>
             <div class="help-topic">
-                <h3>Сооружения</h3>
-                <p><strong>Ферма:</strong> Добывает зерно каждые 15 секунд.</p>
-                <p><strong>Лесопилка:</strong> Добывает дерево каждые 45 секунд.</p>
-                <p><strong>Шахта:</strong> Добывает камень каждые 45 секунд.</p>
+                <h3>Добыча родия</h3>
+                <p>Для добычи родия нажмите кнопку "Добывать". Нажмите 5 раз на каждый блок родия, чтобы добыть 1 единицу.</p>
             </div>
             <div class="help-topic">
-                <h3>Уровень игрока</h3>
-                <p>Уровень игрока повышается за счет улучшений. Каждый уровень увеличивает статус игрока. Цвет уровня меняется каждые 100 уровней.</p>
+                <h3>Продажа родия</h3>
+                <p>Вы можете продать родий по цене 15 тугриков за единицу. Нажмите кнопку "Продажа", чтобы открыть окно продажи.</p>
             </div>
             <button id="close-help">Закрыть</button>
         </div>
@@ -917,6 +944,42 @@
     <!-- Кнопка справочника -->
     <button id="help-button">i</button>
 
+    <!-- Таймер восстановления -->
+    <div id="timer-display">Восстановление Родия через: <span id="timer">05:00</span></div>
+
+    <!-- Рулетка -->
+    <div id="roulette-overlay">
+        <div id="roulette-window">
+            <h2>Рулетка</h2>
+            <p>Выберите число от 1 до 10 и поставьте тугрики:</p>
+            <input type="number" id="roulette-bet-number" min="1" max="10" placeholder="Число">
+            <input type="number" id="roulette-bet-amount" min="1" placeholder="Ставка">
+            <button id="roulette-spin">Крутить!</button>
+            <div id="roulette-wheel">
+                <div id="roulette-wheel-inner">
+                    <span>1</span>
+                    <span>2</span>
+                    <span>3</span>
+                    <span>4</span>
+                    <span>5</span>
+                    <span>6</span>
+                    <span>7</span>
+                    <span>8</span>
+                    <span>9</span>
+                    <span>10</span>
+                </div>
+                <!-- Квадратик-индикатор -->
+                <div id="roulette-indicator"></div>
+            </div>
+            <p id="roulette-result"></p>
+            <p id="roulette-reward">Выигрыш: x11 от ставки!</p>
+            <button id="close-roulette">Закрыть</button>
+        </div>
+    </div>
+
+    <!-- Кнопка для открытия рулетки -->
+    <button id="open-roulette">Играть в рулетку</button>
+
     <script>
         // Переменные игры
         let tugriks = 600; // Начальный баланс 600
@@ -926,51 +989,29 @@
         let passiveLevel = 0;
         let cooldownLevel = 0;
         let clickCost = 50; // Уменьшено на 50%
-        let passiveCost = 50; // Уменьшено на 50%
+        let passiveCost = 200; // Установлено 200
         let cooldownCost = 50; // Уменьшено на 50%
         let cooldownTime = 3;
         let isCooldown = false;
         let nickname = 'Гость';
         let level = 1;
         let levelCost = 100;
-
-        // Ресурсы
-        let resources = { grain: 0, wood: 0, stone: 0 };
-
-        // Цены на ресурсы
-        const grainPrice = 2;
-        const woodPrice = 3;
-        const stonePrice = 5;
-
-        // Постройки
-        let buildings = [];
+        let rhodium = 0; // Количество родия
 
         // Элементы интерфейса
-        const gameContainer = document.getElementById('game-container');
         const tugriksDisplay = document.getElementById('tugriks');
         const farmButton = document.getElementById('farm-button');
         const farmButtonTimer = document.getElementById('farm-button-timer');
-        const openMiniGameButton = document.getElementById('open-minigame');
-        const miniGameOverlay = document.getElementById('minigame-overlay');
-        const player = document.getElementById('player');
-        const joystick = document.getElementById('joystick');
-        const joystickHandle = document.getElementById('joystick-handle');
-        const exitMiniGameButton = document.getElementById('exit-minigame');
-        const buildFarmButton = document.getElementById('build-farm');
-        const buildLumbermillButton = document.getElementById('build-lumbermill');
-        const buildMineButton = document.getElementById('build-mine');
-        const openMarketButton = document.getElementById('open-market');
-        const marketOverlay = document.getElementById('market-overlay');
-        const closeMarketButton = document.getElementById('close-market');
-        const grainAmountDisplay = document.getElementById('grain-amount');
-        const woodAmountDisplay = document.getElementById('wood-amount');
-        const stoneAmountDisplay = document.getElementById('stone-amount');
-        const grainSellAmountInput = document.getElementById('grain-sell-amount');
-        const woodSellAmountInput = document.getElementById('wood-sell-amount');
-        const stoneSellAmountInput = document.getElementById('stone-sell-amount');
-        const sellGrainButton = document.getElementById('sell-grain');
-        const sellWoodButton = document.getElementById('sell-wood');
-        const sellStoneButton = document.getElementById('sell-stone');
+        const openMiningButton = document.getElementById('open-mining');
+        const openSellButton = document.getElementById('open-sell');
+        const miningOverlay = document.getElementById('mining-overlay');
+        const rhodiumBlocks = document.querySelectorAll('.rhodium-block');
+        const closeMiningButton = document.getElementById('close-mining');
+        const sellOverlay = document.getElementById('sell-overlay');
+        const rhodiumAmountDisplay = document.getElementById('rhodium-amount');
+        const rhodiumSellAmountInput = document.getElementById('rhodium-sell-amount');
+        const sellRhodiumButton = document.getElementById('sell-rhodium');
+        const closeSellButton = document.getElementById('close-sell');
         const openUpgradesButton = document.getElementById('open-upgrades');
         const toggleChatButton = document.getElementById('toggle-chat');
         const chatMessages = document.getElementById('chat-messages');
@@ -984,26 +1025,22 @@
         const upgradeCooldownButton = document.getElementById('upgrade-cooldown');
         const helpOverlay = document.getElementById('help-overlay');
         const closeHelpButton = document.getElementById('close-help');
+        const nicknameDisplay = document.getElementById('nickname');
+        const levelDisplay = document.getElementById('level');
+        const helpButton = document.getElementById('help-button');
         const nicknameLevelOverlay = document.getElementById('nickname-level-overlay');
         const newNicknameInput = document.getElementById('new-nickname');
         const changeNicknameButton = document.getElementById('change-nickname');
         const upgradeLevelButton = document.getElementById('upgrade-level');
         const closeNicknameLevelButton = document.getElementById('close-nickname-level');
-        const nicknameDisplay = document.getElementById('nickname');
-        const levelDisplay = document.getElementById('level');
-        const helpButton = document.getElementById('help-button');
-
-        let playerX = 400; // Начальная позиция X
-        let playerY = 300; // Начальная позиция Y
-
-        // Сбор тугриков
-        farmButton.addEventListener('click', () => {
-            if (isCooldown) return;
-
-            tugriks += clickIncome;
-            updateUI();
-            startCooldown();
-        });
+        const timerDisplay = document.getElementById('timer-display');
+        const timerText = document.getElementById('timer');
+        const rouletteOverlay = document.getElementById('roulette-overlay');
+        const rouletteSpinButton = document.getElementById('roulette-spin');
+        const rouletteIndicator = document.getElementById('roulette-indicator');
+        const rouletteResult = document.getElementById('roulette-result');
+        const closeRouletteButton = document.getElementById('close-roulette');
+        const openRouletteButton = document.getElementById('open-roulette');
 
         // Обновляем интерфейс
         function updateUI() {
@@ -1017,232 +1054,94 @@
             document.getElementById('click-cost').innerText = clickCost;
             document.getElementById('passive-cost').innerText = passiveCost;
             document.getElementById('cooldown-cost').innerText = cooldownCost;
-            grainAmountDisplay.innerText = resources.grain;
-            woodAmountDisplay.innerText = resources.wood;
-            stoneAmountDisplay.innerText = resources.stone;
+            rhodiumAmountDisplay.innerText = rhodium;
+            rhodiumSellAmountInput.max = rhodium;
         }
 
-        // Управление персонажем с джойстика
-        let isJoystickActive = false;
-        const joystickRadius = 50; // Радиус джойстика
-        const handleRadius = 20; // Радиус ручки джойстика
-        let moveDirection = { x: 0, y: 0 }; // Направление движения
-
-        joystick.addEventListener('touchstart', (e) => {
-            isJoystickActive = true;
-            moveJoystickHandle(e.touches[0]);
+        // Открытие окна добычи родия
+        openMiningButton.addEventListener('click', () => {
+            miningOverlay.style.display = 'flex';
         });
 
-        joystick.addEventListener('touchmove', (e) => {
-            if (isJoystickActive) {
-                moveJoystickHandle(e.touches[0]);
-            }
+        // Закрытие окна добычи родия
+        closeMiningButton.addEventListener('click', () => {
+            miningOverlay.style.display = 'none';
         });
 
-        joystick.addEventListener('touchend', () => {
-            isJoystickActive = false;
-            joystickHandle.style.transform = 'translate(0, 0)';
-            moveDirection = { x: 0, y: 0 }; // Останавливаем движение
-        });
+        // Добыча родия
+        rhodiumBlocks.forEach(block => {
+            block.addEventListener('click', () => {
+                if (block.classList.contains('disabled')) return;
 
-        joystick.addEventListener('mousedown', (e) => {
-            isJoystickActive = true;
-            moveJoystickHandle(e);
-        });
+                let clicks = parseInt(block.getAttribute('data-clicks')) + 1;
+                block.setAttribute('data-clicks', clicks);
 
-        document.addEventListener('mousemove', (e) => {
-            if (isJoystickActive) {
-                moveJoystickHandle(e);
-            }
-        });
+                // Уменьшаем размер блока при каждом клике
+                block.style.transform = `scale(${1 - clicks * 0.1})`;
 
-        document.addEventListener('mouseup', () => {
-            isJoystickActive = false;
-            joystickHandle.style.transform = 'translate(0, 0)';
-            moveDirection = { x: 0, y: 0 }; // Останавливаем движение
-        });
-
-        function moveJoystickHandle(event) {
-            const rect = joystick.getBoundingClientRect();
-            const centerX = rect.left + joystickRadius;
-            const centerY = rect.top + joystickRadius;
-            const deltaX = (event.clientX || event.touches[0].clientX) - centerX;
-            const deltaY = (event.clientY || event.touches[0].clientY) - centerY;
-            const distance = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
-            const angle = Math.atan2(deltaY, deltaX);
-
-            if (distance > joystickRadius) {
-                const limitedX = Math.cos(angle) * joystickRadius;
-                const limitedY = Math.sin(angle) * joystickRadius;
-                joystickHandle.style.transform = `translate(${limitedX}px, ${limitedY}px)`;
-                moveDirection.x = Math.cos(angle);
-                moveDirection.y = Math.sin(angle);
-            } else {
-                joystickHandle.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-                moveDirection.x = deltaX / joystickRadius;
-                moveDirection.y = deltaY / joystickRadius;
-            }
-        }
-
-        // Плавное движение персонажа
-        function updatePlayerPosition() {
-            const speed = 5;
-            playerX += moveDirection.x * speed;
-            playerY += moveDirection.y * speed;
-            player.style.left = `${playerX}px`;
-            player.style.top = `${playerY}px`;
-            requestAnimationFrame(updatePlayerPosition);
-        }
-
-        // Запускаем обновление позиции
-        updatePlayerPosition();
-
-        // Открытие мини-игры
-        openMiniGameButton.addEventListener('click', () => {
-            miniGameOverlay.style.display = 'block';
-        });
-
-        // Выход из мини-игры
-        exitMiniGameButton.addEventListener('click', () => {
-            miniGameOverlay.style.display = 'none';
-        });
-
-        // Строительство зданий
-        buildFarmButton.addEventListener('click', () => {
-            if (tugriks >= 200) {
-                tugriks -= 200;
-                updateUI();
-                placeBuilding('farm', playerX, playerY, 300); // Ферма с запасом 300
-            } else {
-                alert("Недостаточно тугриков!");
-            }
-        });
-
-        buildLumbermillButton.addEventListener('click', () => {
-            if (tugriks >= 300) {
-                tugriks -= 300;
-                updateUI();
-                placeBuilding('lumbermill', playerX, playerY, 220); // Лесопилка с запасом 220
-            } else {
-                alert("Недостаточно тугриков!");
-            }
-        });
-
-        buildMineButton.addEventListener('click', () => {
-            if (tugriks >= 500) {
-                tugriks -= 500;
-                updateUI();
-                placeBuilding('mine', playerX, playerY, 180); // Шахта с запасом 180
-            } else {
-                alert("Недостаточно тугриков!");
-            }
-        });
-
-        function placeBuilding(type, x, y, resourceLimit) {
-            const building = document.createElement('div');
-            building.className = `building ${type}`;
-            building.style.left = `${x}px`;
-            building.style.top = `${y}px`;
-            building.style.width = '50px';
-            building.style.height = '50px';
-            building.innerText = type === 'farm' ? 'Ферма' : type === 'lumbermill' ? 'Лесопилка' : 'Шахта';
-            document.getElementById('game-map').appendChild(building);
-
-            // Добавляем запас ресурсов
-            building.resourceLimit = resourceLimit;
-            building.resourceCount = resourceLimit;
-
-            // Добавляем отображение запаса
-            const resourceDisplay = document.createElement('span');
-            resourceDisplay.innerText = `${building.resourceCount}/${building.resourceLimit}`;
-            building.appendChild(resourceDisplay);
-
-            // Добавляем кнопку уничтожения
-            const destroyButton = document.createElement('button');
-            destroyButton.className = 'destroy-button';
-            destroyButton.innerText = 'Уничтожить';
-            destroyButton.style.display = 'none';
-            destroyButton.addEventListener('click', () => {
-                building.remove();
-                destroyButton.remove();
-            });
-            building.appendChild(destroyButton);
-
-            // Генерация ресурсов
-            const interval = type === 'farm' ? 15000 : 45000; // 15 секунд для фермы, 45 секунд для остальных
-            const resourceType = type === 'farm' ? 'grain' : type === 'lumbermill' ? 'wood' : 'stone';
-            const resourceInterval = setInterval(() => {
-                if (building.resourceCount > 0) {
-                    resources[resourceType] += 1;
-                    building.resourceCount -= 1;
-                    resourceDisplay.innerText = `${building.resourceCount}/${building.resourceLimit}`;
+                if (clicks >= 5) {
+                    rhodium += 1;
                     updateUI();
-                } else {
-                    clearInterval(resourceInterval);
-                    destroyButton.style.display = 'block';
+                    block.classList.add('disabled');
+                    block.style.transform = 'scale(0)';
+                    block.style.opacity = '0';
+
+                    // Проверяем, все ли блоки добыты
+                    if (Array.from(rhodiumBlocks).every(b => b.classList.contains('disabled'))) {
+                        // Запускаем таймер на 5 минут
+                        startTimer(5 * 60); // 5 минут
+                    }
                 }
-            }, interval);
+            });
+        });
 
-            buildings.push(building);
+        // Запуск таймера
+        function startTimer(duration) {
+            let timer = duration;
+            timerDisplay.style.display = 'block';
+
+            const interval = setInterval(() => {
+                const minutes = Math.floor(timer / 60);
+                const seconds = timer % 60;
+
+                timerText.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    timerDisplay.style.display = 'none';
+
+                    // Восстанавливаем блоки
+                    rhodiumBlocks.forEach(b => {
+                        b.classList.remove('disabled');
+                        b.style.transform = 'scale(1)';
+                        b.style.opacity = '1';
+                        b.setAttribute('data-clicks', 0);
+                    });
+                }
+            }, 1000);
         }
 
-        // Рынок
-        openMarketButton.addEventListener('click', () => {
-            marketOverlay.style.display = 'flex';
-            updateMarketUI();
+        // Открытие окна продажи родия
+        openSellButton.addEventListener('click', () => {
+            sellOverlay.style.display = 'flex';
         });
 
-        closeMarketButton.addEventListener('click', () => {
-            marketOverlay.style.display = 'none';
+        // Закрытие окна продажи родия
+        closeSellButton.addEventListener('click', () => {
+            sellOverlay.style.display = 'none';
         });
 
-        sellGrainButton.addEventListener('click', () => {
-            const amount = parseInt(grainSellAmountInput.value);
-            if (isNaN(amount) || amount <= 0 || amount > resources.grain) {
+        // Продажа родия
+        sellRhodiumButton.addEventListener('click', () => {
+            const amount = parseInt(rhodiumSellAmountInput.value);
+            if (isNaN(amount) || amount <= 0 || amount > rhodium) {
                 alert("Пожалуйста, введите корректное количество!");
                 return;
             }
-            resources.grain -= amount;
-            tugriks += amount * grainPrice;
+            rhodium -= amount;
+            tugriks += amount * 15;
             updateUI();
-            updateMarketUI();
         });
-
-        sellWoodButton.addEventListener('click', () => {
-            const amount = parseInt(woodSellAmountInput.value);
-            if (isNaN(amount) || amount <= 0 || amount > resources.wood) {
-                alert("Пожалуйста, введите корректное количество!");
-                return;
-            }
-            resources.wood -= amount;
-            tugriks += amount * woodPrice;
-            updateUI();
-            updateMarketUI();
-        });
-
-        sellStoneButton.addEventListener('click', () => {
-            const amount = parseInt(stoneSellAmountInput.value);
-            if (isNaN(amount) || amount <= 0 || amount > resources.stone) {
-                alert("Пожалуйста, введите корректное количество!");
-                return;
-            }
-            resources.stone -= amount;
-            tugriks += amount * stonePrice;
-            updateUI();
-            updateMarketUI();
-        });
-
-        function updateMarketUI() {
-            grainAmountDisplay.innerText = resources.grain;
-            woodAmountDisplay.innerText = resources.wood;
-            stoneAmountDisplay.innerText = resources.stone;
-            grainSellAmountInput.max = resources.grain;
-            woodSellAmountInput.max = resources.wood;
-            stoneSellAmountInput.max = resources.stone;
-            grainSellAmountInput.value = '';
-            woodSellAmountInput.value = '';
-            stoneSellAmountInput.value = '';
-        }
 
         // Улучшения
         openUpgradesButton.addEventListener('click', () => {
@@ -1329,6 +1228,15 @@
             }, cooldownTime * 1000);
         }
 
+        // Обработчик клика на кнопку "Фармить"
+        farmButton.addEventListener('click', () => {
+            if (!isCooldown) {
+                tugriks += clickIncome;
+                updateUI();
+                startCooldown();
+            }
+        });
+
         // Справочник
         helpButton.addEventListener('click', () => {
             helpOverlay.style.display = 'flex';
@@ -1385,9 +1293,69 @@
             return '#ffffff'; // Белый для уровней ниже 100
         }
 
+        // Пассивный доход
+        setInterval(() => {
+            tugriks += passiveIncome;
+            updateUI();
+        }, 10000); // 10 секунд
+
         // Инициализация интерфейса
         updateUI();
-        marketOverlay.style.display = 'none'; // Скрываем окно рынка при старте
+        miningOverlay.style.display = 'none'; // Скрываем окно добычи при старте
+        sellOverlay.style.display = 'none'; // Скрываем окно продажи при старте
+
+        // Рулетка
+        openRouletteButton.addEventListener('click', () => {
+            rouletteOverlay.style.display = 'flex';
+        });
+
+        closeRouletteButton.addEventListener('click', () => {
+            rouletteOverlay.style.display = 'none';
+        });
+
+        rouletteSpinButton.addEventListener('click', () => {
+            const betNumber = parseInt(document.getElementById('roulette-bet-number').value);
+            const betAmount = parseInt(document.getElementById('roulette-bet-amount').value);
+
+            if (isNaN(betNumber) || betNumber < 1 || betNumber > 10) {
+                alert("Пожалуйста, выберите число от 1 до 10!");
+                return;
+            }
+
+            if (isNaN(betAmount) || betAmount < 1 || betAmount > tugriks) {
+                alert("Пожалуйста, введите корректную ставку!");
+                return;
+            }
+
+            // Случайное число от 1 до 10
+            const randomNumber = Math.floor(Math.random() * 10) + 1;
+
+            // Вычисляем позицию для индикатора
+            const numberWidth = 40; // Ширина одного числа
+            const indicatorOffset = (randomNumber - 1) * numberWidth;
+
+            // Запуск анимации
+            rouletteIndicator.style.transition = 'left 3s ease-out';
+            rouletteIndicator.style.left = `${indicatorOffset}px`;
+            rouletteSpinButton.disabled = true;
+
+            // Остановка анимации и вывод результата
+            setTimeout(() => {
+                rouletteResult.textContent = `Выпало число: ${randomNumber}`;
+
+                if (randomNumber === betNumber) {
+                    const winAmount = betAmount * 11; // x11 от ставки
+                    tugriks += winAmount;
+                    rouletteResult.textContent += ` 🎉 Вы выиграли ${winAmount} тугриков!`;
+                } else {
+                    tugriks -= betAmount;
+                    rouletteResult.textContent += ` 😢 Вы проиграли ${betAmount} тугриков.`;
+                }
+
+                updateUI();
+                rouletteSpinButton.disabled = false;
+            }, 3000); // 3 секунды анимации
+        });
     </script>
 </body>
 </html>
