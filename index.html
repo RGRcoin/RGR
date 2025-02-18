@@ -2,1360 +2,597 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Farmilka</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Космическая ферма 🚀🎍</title>
     <style>
         /* Основные стили */
         body {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-            touch-action: none;
-            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: #fff;
             margin: 0;
             padding: 0;
-            font-family: 'Arial', sans-serif;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            text-align: center;
+            overflow: hidden; /* Запрет скролла */
+            user-select: none; /* Запрет выделения текста */
+        }
+        .container {
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
             align-items: center;
+            padding: 20px;
             height: 100vh;
+            box-sizing: border-box;
+            position: relative;
+            overflow: hidden; /* Запрет скролла внутри контейнера */
         }
-
-        h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 48px;
-            color: #1abc9c;
-            margin: 20px 0;
-            animation: glow 2s infinite;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-
-        @keyframes glow {
-            0% { text-shadow: 0 0 5px #1abc9c, 0 0 10px #1abc9c, 0 0 20px #1abc9c; }
-            50% { text-shadow: 0 0 10px #1abc9c, 0 0 20px #1abc9c, 0 0 30px #1abc9c; }
-            100% { text-shadow: 0 0 5px #1abc9c, 0 0 10px #1abc9c, 0 0 20px #1abc9c; }
-        }
-
-        .balance {
-            font-family: 'Pacifico', cursive;
-            font-size: 24px;
-            color: #1abc9c;
-            margin-bottom: 20px;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            position: fixed;
-            bottom: 120px;
-            left: 0;
-            width: 100%;
-            padding: 10px;
-            background-color: #34495e;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-            font-family: 'Arial', sans-serif;
-            font-size: 18px;
-            color: #ecf0f1;
-        }
-
-        .stats p {
-            margin: 0;
-        }
-
-        .stats p:nth-child(2) {
-            text-align: center;
-        }
-
-        .stats p:nth-child(3) {
-            text-align: left;
-            margin-left: 10px;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            position: fixed;
-            bottom: 45px;
-            right: 1px;
-            width: calc(100% - 20px);
-            padding: 10px;
-            background-color: #34495e;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 15px;
-        }
-
-        .controls button {
-            width: 48%;
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            background-color: #1abc9c;
-            color: white;
-            border: none;
-        }
-
-        .controls button:hover {
-            background-color: #16a085;
-        }
-
-        .controls button:active {
-            transform: scale(0.95);
-        }
-
-        .farm-button-container {
-            position: fixed;
-            bottom: 0;
-            left: 10px; /* Отступ слева */
-            right: 10px; /* Отступ справа */
-            width: calc(100% - 20px); /* Ширина контейнера с учётом отступов */
-            background-color: #34495e;
-            padding: 10px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center; /* Выравниваем кнопку по вертикали */
-        }
-
-        .farm-button {
-            width: 95%; /* Кнопка занимает всю ширину контейнера */
-            font-size: 20px;
-            padding: 15px;
-            border-radius: 5px;
-            position: fixed;
-	    bottom: 10px;
-	    right: 10px;
-            background-color: #1abc9c;
-            color: white;
-            border: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .farm-button:disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        .farm-button:hover:not(:disabled) {
-            background-color: #16a085;
-        }
-
-        .farm-button:active:not(:disabled) {
-            transform: scale(0.95);
-        }
-
-        .farm-button-timer {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            height: 8px;
-            width: 100%;
-            background-color: #16a085;
-            border-radius: 5px;
-            animation: timer 3s linear;
-            z-index: 1;
-        }
-
-        .farm-button-text {
+            padding: 20px;
+            margin: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
             position: relative;
             z-index: 2;
-            transition: opacity 0.3s ease;
         }
-
-        .farm-button:disabled .farm-button-text {
-            opacity: 0.3;
-        }
-
-        @keyframes timer {
-            0% { width: 100%; }
-            100% { width: 0%; }
-        }
-
-        /* Оверлей для улучшений */
-        .upgrades-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .upgrades-overlay.active {
-            display: flex;
-        }
-
-        .upgrades {
-            background-color: #34495e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            width: 90%;
-            max-width: 400px;
-            text-align: center;
-        }
-
-        .upgrade {
-            background-color: #2c3e50;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .upgrade button {
-            background-color: #1abc9c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
+        .clicker {
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: transform 0.1s;
+            -webkit-tap-highlight-color: transparent; /* Убираем синий квадратик */
+            font-size: 96px;
+            animation: float 3s ease-in-out infinite;
         }
-
-        .upgrade button:hover {
-            background-color: #16a085;
+        .clicker:active {
+            transform: scale(0.9);
         }
-
-        .upgrade button:active {
-            transform: scale(0.95);
+        .button {
+            background: linear-gradient(135deg, #00b4db, #0083b0);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin: 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Roboto', sans-serif;
+            font-weight: bold;
         }
-
-        .upgrade button:disabled {
-            background-color: #95a5a6;
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(0, 180, 219, 0.6);
+        }
+        .button:disabled {
+            background: #ccc;
             cursor: not-allowed;
         }
-
-        /* Чат */
-        .chat {
-            display: none;
+        .tab-bar {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
             position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 80%;
-            max-width: 400px;
-            background-color: #34495e;
-            padding: 10px;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            border-radius: 15px;
+            bottom: 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 3;
         }
-
-        .chat.active {
-            display: block;
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .chat-header h2 {
-            margin: 0;
-            font-size: 20px;
-            color: #1abc9c;
-        }
-
-        .chat-close-button {
-            background-color: #e74c3c;
-            color: white;
+        .tab-button {
+            background: none;
             border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
-        }
-
-        .chat-close-button:hover {
-            background-color: #c0392b;
-        }
-
-        .chat-close-button:active {
-            transform: scale(0.95);
-        }
-
-        .chat-messages {
-            height: 150px;
-            overflow-y: scroll;
-            border: 1px solid #1abc9c;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
-            text-align: left;
-            background-color: #2c3e50;
-        }
-
-        .chat-input-container {
-            display: flex;
-            gap: 10px;
-        }
-
-        .chat-input {
-            width: calc(100% - 90px);
-            padding: 10px;
-            border: 1px solid #1abc9c;
-            border-radius: 5px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            font-size: 16px;
-        }
-
-        .chat-send-button {
-            width: 80px;
-            background-color: #1abc9c;
             color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
             font-size: 16px;
-            transition: background-color 0.3s ease;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 10px;
+            transition: background 0.3s;
         }
-
-        .chat-send-button:hover {
-            background-color: #16a085;
+        .tab-button.active {
+            background: rgba(255, 255, 255, 0.1);
         }
-
-        .chat-send-button:active {
-            transform: scale(0.95);
+        .hidden {
+            display: none;
         }
-
-        .message {
-            margin-bottom: 10px;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
         }
-
-        .message .nickname {
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes sunMove {
+            0% { transform: translate(-150%, 100%); }
+            50% { transform: translate(100vw, 0); }
+            100% { transform: translate(200vw, 100%); }
+        }
+        @keyframes starfall {
+            0% { transform: translate(-100%, -100%); }
+            100% { transform: translate(100vw, 100vh); }
+        }
+        @keyframes clickEffect {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .achievement-unlocked {
+            color: #00ff88;
             font-weight: bold;
-            color: #1abc9c;
         }
-
-        .message .time {
-            font-size: 12px;
-            color: #95a5a6;
-            margin-left: 10px;
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            animation: starfall linear infinite;
+            z-index: 1;
         }
-
-        /* Справочник */
-        #help-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
+        .sun {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #ff9a00, #ff2e00);
+            border-radius: 50%;
+            animation: sunMove 10s linear infinite;
+            z-index: 1;
+            box-shadow: 0 0 50px #ff9a00;
         }
-
-        #help-window {
-            background: #34495e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
+        .main-panel {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.7);
         }
-
-        #help-window h2 {
-            color: #1abc9c;
+        .main-panel h2 {
+            font-size: 24px;
             margin-bottom: 20px;
+            color: #00ff88;
         }
-
-        #help-window p {
-            color: #ecf0f1;
-            margin: 10px 0;
-        }
-
-        #help-window button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1abc9c;
-            color: white;
+        .main-panel p {
             font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
+            color: #ccc;
+        }
+        .leaderboard {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        .leaderboard h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #00b4db;
+        }
+        .leaderboard p {
+            font-size: 16px;
             margin: 5px 0;
+            color: #fff;
         }
-
-        #help-window button:hover {
-            background-color: #16a085;
+        .click-effect {
+            position: absolute;
+            font-size: 20px;
+            color: #00ff88;
+            animation: clickEffect 0.5s ease-out;
+            z-index: 10;
         }
-
-        #help-window button:active {
-            transform: scale(0.95);
+        .settings-panel input {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            width: 100%;
+            max-width: 200px;
         }
-
-        /* Кнопка справочника */
-        #help-button {
-            position: fixed;
+        .settings-icon {
+            position: absolute;
             top: 20px;
             right: 20px;
-            background-color: #1abc9c;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #help-button:hover {
-            background-color: #16a085;
-        }
-
-        #help-button:active {
-            transform: scale(0.95);
-        }
-
-        /* Окно добычи родия */
-        #mining-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #mining-window {
-            background: #34495e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        #mining-window h2 {
-            color: #1abc9c;
-            margin-bottom: 20px;
-        }
-
-        .rhodium-blocks {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-        }
-
-        .rhodium-block {
-            width: 80px;
-            height: 80px;
-            background-color: #7f8c8d;
-            border: 2px solid #1abc9c;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-            color: white;
-            cursor: pointer;
-            transition: transform 0.2s ease;
-        }
-
-        .rhodium-block:active {
-            transform: scale(0.95);
-        }
-
-        .rhodium-block.disabled {
-            background-color: #95a5a6;
-            cursor: not-allowed;
-        }
-
-        #mining-window button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1abc9c;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin: 5px 0;
-        }
-
-        #mining-window button:hover {
-            background-color: #16a085;
-        }
-
-        #mining-window button:active {
-            transform: scale(0.95);
-        }
-
-        /* Окно продажи родия */
-        #sell-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #sell-window {
-            background: #34495e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        #sell-window h2 {
-            color: #1abc9c;
-            margin-bottom: 20px;
-        }
-
-        #sell-window input {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #1abc9c;
-            border-radius: 5px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            font-size: 16px;
-        }
-
-        #sell-window button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1abc9c;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin: 5px 0;
-        }
-
-        #sell-window button:hover {
-            background-color: #16a085;
-        }
-
-        #sell-window button:active {
-            transform: scale(0.95);
-        }
-
-        /* Кнопки добычи и продажи */
-        .mining-sell-buttons {
-            position: fixed;
-            bottom: 180px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-        }
-
-        .mining-sell-buttons button {
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        .mining-sell-buttons button:hover {
-            background-color: #16a085;
-        }
-
-        .mining-sell-buttons button:active {
-            transform: scale(0.95);
-        }
-
-        #open-mining {
-            background-color: #1abc9c;
-            color: white;
-        }
-
-        #open-sell {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        /* Окно смены ника и уровня */
-        #nickname-level-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        #nickname-level-window {
-            background: #34495e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        #nickname-level-window h2 {
-            color: #1abc9c;
-            margin-bottom: 20px;
-        }
-
-        #nickname-level-window input {
-            width: calc(100% - 22px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #1abc9c;
-            border-radius: 5px;
-            background-color: #2c3e50;
-            color: #ecf0f1;
-            font-size: 16px;
-        }
-
-        #nickname-level-window button {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1abc9c;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin: 5px 0;
-        }
-
-        #nickname-level-window button:hover {
-            background-color: #16a085;
-        }
-
-        #nickname-level-window button:active {
-            transform: scale(0.95);
-        }
-
-        /* Никнейм */
-        #nickname-display {
-            font-family: 'Pacifico', cursive;
             font-size: 24px;
-            color: #1abc9c;
-            margin-bottom: 20px;
+            cursor: pointer;
+            z-index: 4;
         }
-
-        /* Таймер восстановления */
-        #timer-display {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 18px;
-            color: #1abc9c;
-            z-index: 500;
-            display: none;
-            background-color: rgba(0, 0, 0, 0.7);
-            padding: 5px 10px;
-            border-radius: 5px;
-        }
-
-        /* Стили для рулетки */
-        #roulette-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        #roulette-window {
-            background: #34495e;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            text-align: center;
-            width: 90%;
-            max-width: 400px;
-        }
-
-        #roulette-wheel {
-            display: flex;
-            overflow: hidden;
-            margin: 20px 0;
-            border: 2px solid #1abc9c;
-            border-radius: 10px;
-            background: #2c3e50;
-            position: relative;
-            height: 50px;
-        }
-
-        #roulette-wheel-inner {
-            display: flex;
-        }
-
-        #roulette-wheel-inner span {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            color: #ecf0f1;
-            width: 40px;
-        }
-
-        /* Квадратик-индикатор */
-        #roulette-indicator {
+        .guide-button {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 40px;
-            height: 50px;
-            border: 2px solid #1abc9c;
-            background: rgba(26, 188, 156, 0.2);
-            pointer-events: none;
-            transition: left 3s ease-out;
-        }
-
-        /* Сообщение о награде */
-        #roulette-reward {
-            font-size: 18px;
-            color: #1abc9c;
-            margin-top: 10px;
-        }
-
-        /* Стили для кнопки "Играть в рулетку" */
-        #open-roulette {
-            position: fixed;
-            bottom: 240px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
             cursor: pointer;
-            background-color: #1abc9c;
+            z-index: 4;
+        }
+        .guide-panel {
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 400px;
+            text-align: left;
+        }
+        .guide-panel h3 {
+            color: #00ff88;
+        }
+        .guide-panel p {
+            color: #ccc;
+        }
+        .shop-tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 10px;
+        }
+        .shop-tab-button {
+            background: none;
+            border: none;
             color: white;
-            outline: none; /* Убираем обводку при фокусе */
-        }
-
-        #open-roulette:hover {
-            background-color: #16a085;
-        }
-
-        #open-roulette:active {
-            transform: translateX(-50%) scale(0.95); /* Убедимся, что кнопка не смещается */
-        }
-
-        /* Стили для кнопок в окне рулетки */
-        #roulette-window button {
-            width: 100%;
+            font-size: 16px;
+            cursor: pointer;
             padding: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #1abc9c;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            margin: 5px 0;
+            border-radius: 10px;
+            transition: background 0.3s;
         }
-
-        #roulette-window button:hover {
-            background-color: #16a085;
-        }
-
-        #roulette-window button:active {
-            transform: scale(0.95);
+        .shop-tab-button.active {
+            background: rgba(255, 255, 255, 0.1);
         }
     </style>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <!-- Название игры -->
-    <h1>Farmilka</h1>
+    <div class="container">
+        <!-- Фоновые анимации -->
+        <div class="star" style="left: 10%; animation-duration: 5s;"></div>
+        <div class="star" style="left: 20%; animation-duration: 7s;"></div>
+        <div class="star" style="left: 30%; animation-duration: 6s;"></div>
+        <div class="sun"></div>
 
-    <!-- Ник и уровень игрока -->
-    <div id="nickname-level">
-        <span id="nickname-display"><span id="nickname">Гость</span></span>
-        <span id="level-display">LVL: <span id="level">1</span></span>
-    </div>
+        <!-- Кнопка настроек -->
+        <div class="settings-icon" onclick="showPanel('settings-panel')">⚙️</div>
 
-    <!-- Баланс -->
-    <div class="balance">
-        Баланс: <span id="tugriks">600</span>
-    </div>
+        <!-- Кнопка справочника -->
+        <div class="guide-button" onclick="showPanel('guide-panel')">📖</div>
 
-    <!-- Основной интерфейс игры -->
-    <div id="game-container">
-        <!-- Статистика игрока -->
-        <div class="stats">
-            <p>За клик: <span id="click-income">1</span></p>
-            <p>Пассивно: <span id="passive-income">0</span></p>
-            <p>Перезарядка: <span id="cooldown-time">3.0</span> сек</p>
-        </div>
-    </div>
-
-    <!-- Кнопки управления -->
-    <div class="controls">
-        <button class="button" id="open-upgrades">Улучшения</button>
-        <button class="button chat-toggle" id="toggle-chat">Чат</button>
-    </div>
-
-    <!-- Кнопка "Фармить" -->
-    <div class="farm-button-container">
-        <button class="farm-button" id="farm-button">
-            <span class="farm-button-text">Фармить</span>
-            <div class="farm-button-timer" id="farm-button-timer"></div>
-        </button>
-    </div>
-
-    <!-- Кнопки добычи и продажи -->
-    <div class="mining-sell-buttons">
-        <button id="open-mining">Добывать</button>
-        <button id="open-sell">Продажа</button>
-    </div>
-
-    <!-- Окно добычи родия -->
-    <div id="mining-overlay">
-        <div id="mining-window">
-            <h2>Добыча родия</h2>
-            <div class="rhodium-blocks">
-                <div class="rhodium-block" data-clicks="0">Родий</div>
-                <div class="rhodium-block" data-clicks="0">Родий</div>
-                <div class="rhodium-block" data-clicks="0">Родий</div>
-                <div class="rhodium-block" data-clicks="0">Родий</div>
+        <!-- Основные панели -->
+        <div id="main-panel" class="panel main-panel">
+            <h2>Ресурсы: <span id="resources">0</span></h2>
+            <h2>RGR: <span id="rgr">0</span></h2>
+            <div class="clicker" onclick="collectResource(event)">🎍</div>
+            <p>Кликай на бамбук, чтобы собрать ресурсы!</p>
+            <div class="leaderboard">
+                <h3>Топ игроков</h3>
+                <p id="leaderboard-1">1. <span id="lb-1-name">SpaceMaster</span> - <span id="lb-1-balance">2,500,000</span> RGR</p>
+                <p id="leaderboard-2">2. <span id="lb-2-name">GalaxyKing</span> - <span id="lb-2-balance">2,000,000</span> RGR</p>
+                <p id="leaderboard-3">3. <span id="lb-3-name">StarLord</span> - <span id="lb-3-balance">1,800,000</span> RGR</p>
+                <p id="leaderboard-4">4. <span id="lb-4-name">CosmoRider</span> - <span id="lb-4-balance">1,700,000</span> RGR</p>
+                <p id="leaderboard-5">5. <span id="lb-5-name">AstroNinja</span> - <span id="lb-5-balance">1,500,000</span> RGR</p>
             </div>
-            <button id="close-mining">Закрыть</button>
         </div>
-    </div>
-
-    <!-- Окно продажи родия -->
-    <div id="sell-overlay">
-        <div id="sell-window">
-            <h2>Продажа родия</h2>
-            <p>Родий: <span id="rhodium-amount">0</span> (Цена: 15 тугриков за единицу)</p>
-            <input type="number" id="rhodium-sell-amount" min="0" max="0">
-            <button id="sell-rhodium">Продать родий</button>
-            <button id="close-sell">Закрыть</button>
+        <div id="shop-panel" class="panel hidden">
+            <div class="shop-tabs">
+                <button class="shop-tab-button" onclick="showShopTab('upgrades')">Улучшения</button>
+                <button class="shop-tab-button" onclick="showShopTab('planets')">Планеты</button>
+                <button class="shop-tab-button" onclick="showShopTab('boosts')">Бусты</button>
+            </div>
+            <div id="upgrades-tab" class="shop-tab">
+                <h2>Улучшения</h2>
+                <button class="button" onclick="buyAutoCollector()">Купить авто-сборщик (<span id="auto-collector-price">100</span>)</button>
+                <button class="button" onclick="buyUpgrade()">Улучшить бамбук (<span id="upgrade-price">500</span>)</button>
+                <button class="button" onclick="buySpaceship()">Купить космический корабль (<span id="spaceship-price">1000</span>)</button>
+            </div>
+            <div id="planets-tab" class="shop-tab hidden">
+                <h2>Планеты</h2>
+                <button class="button" onclick="buyPlanet('orion')">Купить планету ORION (100 кораблей)</button>
+                <button class="button" onclick="buyPlanet('torum')">Купить планету TORUM (250 кораблей)</button>
+                <button class="button" onclick="buyPlanet('avemen')">Купить планету AVEMEN (333 корабля)</button>
+                <button class="button" onclick="reviveAvemen()">Оживить AVEMEN (100 кораблей)</button>
+            </div>
+            <div id="boosts-tab" class="shop-tab hidden">
+                <h2>Бусты</h2>
+                <button class="button" onclick="buyBoost('double-resources')">Удвоение ресурсов (500 RGR)</button>
+                <button class="button" onclick="buyBoost('double-rgr')">Удвоение RGR (1000 RGR)</button>
+            </div>
         </div>
-    </div>
-
-    <!-- Оверлей для улучшений -->
-    <div class="upgrades-overlay" id="upgrades-overlay">
-        <div class="upgrades">
+        <div id="upgrades-panel" class="panel hidden">
             <h2>Улучшения</h2>
-            <div class="upgrade">
-                <span>Улучшить доход за клик (Уровень <span id="click-level">1</span>)</span>
-                <button id="upgrade-click">Купить (<span id="click-cost">50</span> Тугриков)</button>
-            </div>
-            <div class="upgrade">
-                <span>Улучшить пассивный доход (Уровень <span id="passive-level">0</span>)</span>
-                <button id="upgrade-passive">Купить (<span id="passive-cost">200</span> Тугриков)</button>
-            </div>
-            <div class="upgrade">
-                <span>Уменьшить перезарядку (Уровень <span id="cooldown-level">0</span>)</span>
-                <button id="upgrade-cooldown">Купить (<span id="cooldown-cost">50</span> Тугриков)</button>
-            </div>
-            <button class="button" id="close-upgrades">Закрыть</button>
+            <p>Авто-сборщики: <span id="auto-collectors">0</span></p>
+            <p>Уровень бамбука: <span id="plant-level">1</span></p>
+            <p>Космические корабли: <span id="spaceships">0</span></p>
+            <p>Планета ORION: <span id="orion-count">0</span></p>
+            <p>Планета TORUM: <span id="torum-count">0</span></p>
+            <p>Планета AVEMEN: <span id="avemen-count">0</span> (<span id="avemen-status">неактивна</span>)</p>
+        </div>
+        <div id="achievements-panel" class="panel hidden">
+            <h2>Достижения</h2>
+            <p id="achievement-1">Сделай 100 кликов 🔒</p>
+            <p id="achievement-2">Сделай 1000 кликов 🔒</p>
+            <p id="achievement-3">Купи 10 улучшений 🔒</p>
+            <p id="achievement-4">Собери 10,000 ресурсов 🔒</p>
+            <p id="achievement-5">Купи 50 улучшений 🔒</p>
+        </div>
+        <div id="settings-panel" class="panel hidden">
+            <h2>Настройки</h2>
+            <input type="text" id="nickname-input" placeholder="Введите ваш ник (макс. 12 букв)" maxlength="12">
+            <button class="button" onclick="saveNickname()">Сохранить ник</button>
+            <h3>Смена языка</h3>
+            <button class="button" onclick="changeLanguage('ru')">Русский</button>
+            <button class="button" onclick="changeLanguage('pirate')">Пиратский</button>
+            <button class="button" onclick="changeLanguage('bydlo')">Быдло-язык</button>
+        </div>
+        <div id="guide-panel" class="panel hidden guide-panel">
+            <h3>Справочник</h3>
+            <p><strong>Кликай на бамбук</strong>: Собирай ресурсы, кликая на бамбук.</p>
+            <p><strong>Магазин</strong>: Покупай улучшения, космические корабли и планеты.</p>
+            <p><strong>Планеты</strong>:
+                <ul>
+                    <li><strong>ORION</strong>: Даёт 0.01 RGR в секунду.</li>
+                    <li><strong>TORUM</strong>: Даёт 0.04 RGR в секунду.</li>
+                    <li><strong>AVEMEN</strong>: Даёт 0.09 RGR в секунду, но требует ежедневного оживления.</li>
+                </ul>
+            </p>
+            <p><strong>RGR</strong>: Новая валюта, которую генерируют планеты.</p>
         </div>
     </div>
-
-    <!-- Чат -->
-    <div class="chat" id="chat">
-        <div class="chat-header">
-            <h2>Чат</h2>
-            <button class="chat-close-button" id="close-chat">✕</button>
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <!-- Сообщения чата будут здесь -->
-        </div>
-        <div class="chat-input-container">
-            <input type="text" class="chat-input" id="chat-input" placeholder="Введите сообщение...">
-            <button class="chat-send-button" id="send-message">Отправить</button>
-        </div>
+    <div class="tab-bar">
+        <button class="tab-button" onclick="showPanel('main-panel')">Главная</button>
+        <button class="tab-button" onclick="showPanel('shop-panel')">Магазин</button>
+        <button class="tab-button" onclick="showPanel('upgrades-panel')">Улучшения</button>
+        <button class="tab-button" onclick="showPanel('achievements-panel')">Достижения</button>
+        <button class="tab-button" onclick="showPanel('settings-panel')">Настройки</button>
     </div>
 
-    <!-- Справочник -->
-    <div id="help-overlay">
-        <div id="help-window">
-            <h2>Справочник</h2>
-            <div class="help-topic">
-                <h3>Добыча родия</h3>
-                <p>Для добычи родия нажмите кнопку "Добывать". Нажмите 5 раз на каждый блок родия, чтобы добыть 1 единицу.</p>
-            </div>
-            <div class="help-topic">
-                <h3>Продажа родия</h3>
-                <p>Вы можете продать родий по цене 15 тугриков за единицу. Нажмите кнопку "Продажа", чтобы открыть окно продажи.</p>
-            </div>
-            <button id="close-help">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- Окно смены ника и уровня -->
-    <div id="nickname-level-overlay">
-        <div id="nickname-level-window">
-            <h2>Смена ника и уровня</h2>
-            <input type="text" id="new-nickname" placeholder="Новый никнейм">
-            <button id="change-nickname">Сменить ник</button>
-            <button id="upgrade-level">Улучшить уровень (100 Тугриков)</button>
-            <button id="close-nickname-level">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- Кнопка справочника -->
-    <button id="help-button">i</button>
-
-    <!-- Таймер восстановления -->
-    <div id="timer-display">Восстановление Родия через: <span id="timer">05:00</span></div>
-
-    <!-- Рулетка -->
-    <div id="roulette-overlay">
-        <div id="roulette-window">
-            <h2>Рулетка</h2>
-            <p>Выберите число от 1 до 10 и поставьте тугрики:</p>
-            <input type="number" id="roulette-bet-number" min="1" max="10" placeholder="Число">
-            <input type="number" id="roulette-bet-amount" min="1" placeholder="Ставка">
-            <button id="roulette-spin">Крутить!</button>
-            <div id="roulette-wheel">
-                <div id="roulette-wheel-inner">
-                    <span>1</span>
-                    <span>2</span>
-                    <span>3</span>
-                    <span>4</span>
-                    <span>5</span>
-                    <span>6</span>
-                    <span>7</span>
-                    <span>8</span>
-                    <span>9</span>
-                    <span>10</span>
-                </div>
-                <!-- Квадратик-индикатор -->
-                <div id="roulette-indicator"></div>
-            </div>
-            <p id="roulette-result"></p>
-            <p id="roulette-reward">Выигрыш: x11 от ставки!</p>
-            <button id="close-roulette">Закрыть</button>
-        </div>
-    </div>
-
-    <!-- Кнопка для открытия рулетки -->
-    <button id="open-roulette">Играть в рулетку</button>
+    <audio id="click-sound" src="https://www.soundjay.com/button/button-3.mp3"></audio>
+    <audio id="achievement-sound" src="https://www.soundjay.com/misc/sci-fi-achievement-01.mp3"></audio>
+    <audio id="background-music" loop>
+        <source src="https://www.soundjay.com/misc/sounds/space-ambience-1.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        // Переменные игры
-        let tugriks = 600; // Начальный баланс 600
-        let clickIncome = 1;
-        let passiveIncome = 0;
-        let clickLevel = 1;
-        let passiveLevel = 0;
-        let cooldownLevel = 0;
-        let clickCost = 50; // Уменьшено на 50%
-        let passiveCost = 200; // Установлено 200
-        let cooldownCost = 50; // Уменьшено на 50%
-        let cooldownTime = 3;
-        let isCooldown = false;
-        let nickname = 'Гость';
-        let level = 1;
-        let levelCost = 100;
-        let rhodium = 0; // Количество родия
+        let resources = 0;
+        let rgr = 0;
+        let autoCollectors = 0;
+        let plantLevel = 1;
+        let spaceships = 0;
+        let orionCount = 0;
+        let torumCount = 0;
+        let avemenCount = 0;
+        let avemenActive = false;
+        let clickCount = 0;
+        let upgradeCount = 0;
+        let autoCollectorPrice = 100;
+        let upgradePrice = 500;
+        let spaceshipPrice = 1000;
+        let quests = {
+            1: { completed: false, reward: 200 }
+        };
+        let leaderboard = [
+            { name: "SpaceMaster", balance: 2500000 },
+            { name: "GalaxyKing", balance: 2000000 },
+            { name: "StarLord", balance: 1800000 },
+            { name: "CosmoRider", balance: 1700000 },
+            { name: "AstroNinja", balance: 1500000 }
+        ];
+        let playerNickname = "Игрок";
+        const randomNames = [
+            "SpaceMaster", "GalaxyKing", "StarLord", "CosmoRider", "AstroNinja",
+            "NebulaQueen", "OrionWarrior", "SolarFlare", "LunarKnight", "CometRider",
+            "BlackHole", "StellarGuard", "MeteorStrike", "PlanetHunter", "CosmicPirate"
+        ];
 
-        // Элементы интерфейса
-        const tugriksDisplay = document.getElementById('tugriks');
-        const farmButton = document.getElementById('farm-button');
-        const farmButtonTimer = document.getElementById('farm-button-timer');
-        const openMiningButton = document.getElementById('open-mining');
-        const openSellButton = document.getElementById('open-sell');
-        const miningOverlay = document.getElementById('mining-overlay');
-        const rhodiumBlocks = document.querySelectorAll('.rhodium-block');
-        const closeMiningButton = document.getElementById('close-mining');
-        const sellOverlay = document.getElementById('sell-overlay');
-        const rhodiumAmountDisplay = document.getElementById('rhodium-amount');
-        const rhodiumSellAmountInput = document.getElementById('rhodium-sell-amount');
-        const sellRhodiumButton = document.getElementById('sell-rhodium');
-        const closeSellButton = document.getElementById('close-sell');
-        const openUpgradesButton = document.getElementById('open-upgrades');
-        const toggleChatButton = document.getElementById('toggle-chat');
-        const chatMessages = document.getElementById('chat-messages');
-        const chatInput = document.getElementById('chat-input');
-        const sendMessageButton = document.getElementById('send-message');
-        const closeChatButton = document.getElementById('close-chat');
-        const upgradesOverlay = document.getElementById('upgrades-overlay');
-        const closeUpgradesButton = document.getElementById('close-upgrades');
-        const upgradeClickButton = document.getElementById('upgrade-click');
-        const upgradePassiveButton = document.getElementById('upgrade-passive');
-        const upgradeCooldownButton = document.getElementById('upgrade-cooldown');
-        const helpOverlay = document.getElementById('help-overlay');
-        const closeHelpButton = document.getElementById('close-help');
-        const nicknameDisplay = document.getElementById('nickname');
-        const levelDisplay = document.getElementById('level');
-        const helpButton = document.getElementById('help-button');
-        const nicknameLevelOverlay = document.getElementById('nickname-level-overlay');
-        const newNicknameInput = document.getElementById('new-nickname');
-        const changeNicknameButton = document.getElementById('change-nickname');
-        const upgradeLevelButton = document.getElementById('upgrade-level');
-        const closeNicknameLevelButton = document.getElementById('close-nickname-level');
-        const timerDisplay = document.getElementById('timer-display');
-        const timerText = document.getElementById('timer');
-        const rouletteOverlay = document.getElementById('roulette-overlay');
-        const rouletteSpinButton = document.getElementById('roulette-spin');
-        const rouletteIndicator = document.getElementById('roulette-indicator');
-        const rouletteResult = document.getElementById('roulette-result');
-        const closeRouletteButton = document.getElementById('close-roulette');
-        const openRouletteButton = document.getElementById('open-roulette');
-
-        // Обновляем интерфейс
-        function updateUI() {
-            tugriksDisplay.innerText = tugriks;
-            document.getElementById('click-income').innerText = clickIncome;
-            document.getElementById('passive-income').innerText = passiveIncome;
-            document.getElementById('cooldown-time').innerText = cooldownTime.toFixed(1);
-            document.getElementById('click-level').innerText = clickLevel;
-            document.getElementById('passive-level').innerText = passiveLevel;
-            document.getElementById('cooldown-level').innerText = cooldownLevel;
-            document.getElementById('click-cost').innerText = clickCost;
-            document.getElementById('passive-cost').innerText = passiveCost;
-            document.getElementById('cooldown-cost').innerText = cooldownCost;
-            rhodiumAmountDisplay.innerText = rhodium;
-            rhodiumSellAmountInput.max = rhodium;
+        function collectResource(event) {
+            resources += plantLevel;
+            clickCount++;
+            updateDisplay();
+            playSound('click-sound');
+            checkAchievements();
+            createClickEffect(event);
         }
 
-        // Открытие окна добычи родия
-        openMiningButton.addEventListener('click', () => {
-            miningOverlay.style.display = 'flex';
-        });
+        function createClickEffect(event) {
+            const clickEffect = document.createElement('div');
+            clickEffect.className = 'click-effect';
+            clickEffect.innerText = `+${plantLevel}`;
+            clickEffect.style.left = `${event.clientX}px`;
+            clickEffect.style.top = `${event.clientY}px`;
+            document.body.appendChild(clickEffect);
+            setTimeout(() => clickEffect.remove(), 500);
+        }
 
-        // Закрытие окна добычи родия
-        closeMiningButton.addEventListener('click', () => {
-            miningOverlay.style.display = 'none';
-        });
+        function buyAutoCollector() {
+            if (resources >= autoCollectorPrice) {
+                resources -= autoCollectorPrice;
+                autoCollectors++;
+                autoCollectorPrice = Math.round(autoCollectorPrice * 1.1);
+                updateDisplay();
+                startAutoCollector();
+            }
+        }
 
-        // Добыча родия
-        rhodiumBlocks.forEach(block => {
-            block.addEventListener('click', () => {
-                if (block.classList.contains('disabled')) return;
+        function buyUpgrade() {
+            if (resources >= upgradePrice) {
+                resources -= upgradePrice;
+                plantLevel++;
+                upgradePrice = Math.round(upgradePrice * 1.1);
+                updateDisplay();
+                checkAchievements();
+            }
+        }
 
-                let clicks = parseInt(block.getAttribute('data-clicks')) + 1;
-                block.setAttribute('data-clicks', clicks);
+        function buySpaceship() {
+            if (resources >= spaceshipPrice) {
+                resources -= spaceshipPrice;
+                spaceships++;
+                spaceshipPrice = Math.round(spaceshipPrice * 1.1);
+                updateDisplay();
+            }
+        }
 
-                // Уменьшаем размер блока при каждом клике
-                block.style.transform = `scale(${1 - clicks * 0.1})`;
+        function buyPlanet(planet) {
+            if (planet === 'orion' && spaceships >= 100) {
+                spaceships -= 100;
+                orionCount++;
+                updateDisplay();
+            } else if (planet === 'torum' && spaceships >= 250) {
+                spaceships -= 250;
+                torumCount++;
+                updateDisplay();
+            } else if (planet === 'avemen' && spaceships >= 333) {
+                spaceships -= 333;
+                avemenCount++;
+                updateDisplay();
+            }
+        }
 
-                if (clicks >= 5) {
-                    rhodium += 1;
-                    updateUI();
-                    block.classList.add('disabled');
-                    block.style.transform = 'scale(0)';
-                    block.style.opacity = '0';
+        function reviveAvemen() {
+            if (spaceships >= 100 && avemenCount > 0) {
+                spaceships -= 100;
+                avemenActive = true;
+                updateDisplay();
+                setTimeout(() => {
+                    avemenActive = false;
+                    updateDisplay();
+                }, 86400000); // 24 часа
+            }
+        }
 
-                    // Проверяем, все ли блоки добыты
-                    if (Array.from(rhodiumBlocks).every(b => b.classList.contains('disabled'))) {
-                        // Запускаем таймер на 5 минут
-                        startTimer(5 * 60); // 5 минут
-                    }
-                }
+        function startAutoCollector() {
+            setInterval(() => {
+                resources += autoCollectors * plantLevel;
+                rgr += orionCount * 0.01 + torumCount * 0.04 + (avemenActive ? avemenCount * 0.09 : 0);
+                updateDisplay();
+            }, 3000); // Фарм RGR раз в 3 секунды
+        }
+
+        function checkAchievements() {
+            if (clickCount >= 100 && !document.getElementById('achievement-1').classList.contains('achievement-unlocked')) {
+                document.getElementById('achievement-1').innerText = 'Сделай 100 кликов ✅';
+                document.getElementById('achievement-1').classList.add('achievement-unlocked');
+                resources += 50; // Награда
+                playSound('achievement-sound');
+            }
+            if (clickCount >= 1000 && !document.getElementById('achievement-2').classList.contains('achievement-unlocked')) {
+                document.getElementById('achievement-2').innerText = 'Сделай 1000 кликов ✅';
+                document.getElementById('achievement-2').classList.add('achievement-unlocked');
+                resources += 200; // Награда
+                playSound('achievement-sound');
+            }
+            if (upgradeCount >= 10 && !document.getElementById('achievement-3').classList.contains('achievement-unlocked')) {
+                document.getElementById('achievement-3').innerText = 'Купи 10 улучшений ✅';
+                document.getElementById('achievement-3').classList.add('achievement-unlocked');
+                resources += 500; // Награда
+                playSound('achievement-sound');
+            }
+            if (resources >= 10000 && !document.getElementById('achievement-4').classList.contains('achievement-unlocked')) {
+                document.getElementById('achievement-4').innerText = 'Собери 10,000 ресурсов ✅';
+                document.getElementById('achievement-4').classList.add('achievement-unlocked');
+                resources += 1000; // Награда
+                playSound('achievement-sound');
+            }
+            if (upgradeCount >= 50 && !document.getElementById('achievement-5').classList.contains('achievement-unlocked')) {
+                document.getElementById('achievement-5').innerText = 'Купи 50 улучшений ✅';
+                document.getElementById('achievement-5').classList.add('achievement-unlocked');
+                resources += 5000; // Награда
+                playSound('achievement-sound');
+            }
+        }
+
+        function completeQuest(questId) {
+            if (!quests[questId].completed && resources >= 500) {
+                resources += quests[questId].reward;
+                quests[questId].completed = true;
+                document.getElementById(`quest-${questId}`).innerText = 'Квест завершён ✅';
+                updateDisplay();
+            }
+        }
+
+        function updateLeaderboard() {
+            leaderboard.forEach((player, index) => {
+                player.balance += (5 - index) * 1000; // Чем выше место, тем быстрее растёт баланс
+                document.getElementById(`lb-${index + 1}-balance`).textContent = player.balance.toLocaleString();
             });
-        });
-
-        // Запуск таймера
-        function startTimer(duration) {
-            let timer = duration;
-            timerDisplay.style.display = 'block';
-
-            const interval = setInterval(() => {
-                const minutes = Math.floor(timer / 60);
-                const seconds = timer % 60;
-
-                timerText.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-
-                if (--timer < 0) {
-                    clearInterval(interval);
-                    timerDisplay.style.display = 'none';
-
-                    // Восстанавливаем блоки
-                    rhodiumBlocks.forEach(b => {
-                        b.classList.remove('disabled');
-                        b.style.transform = 'scale(1)';
-                        b.style.opacity = '1';
-                        b.setAttribute('data-clicks', 0);
-                    });
-                }
-            }, 1000);
         }
 
-        // Открытие окна продажи родия
-        openSellButton.addEventListener('click', () => {
-            sellOverlay.style.display = 'flex';
-        });
-
-        // Закрытие окна продажи родия
-        closeSellButton.addEventListener('click', () => {
-            sellOverlay.style.display = 'none';
-        });
-
-        // Продажа родия
-        sellRhodiumButton.addEventListener('click', () => {
-            const amount = parseInt(rhodiumSellAmountInput.value);
-            if (isNaN(amount) || amount <= 0 || amount > rhodium) {
-                alert("Пожалуйста, введите корректное количество!");
-                return;
-            }
-            rhodium -= amount;
-            tugriks += amount * 15;
-            updateUI();
-        });
-
-        // Улучшения
-        openUpgradesButton.addEventListener('click', () => {
-            upgradesOverlay.classList.add('active');
-        });
-
-        closeUpgradesButton.addEventListener('click', () => {
-            upgradesOverlay.classList.remove('active');
-        });
-
-        upgradeClickButton.addEventListener('click', () => {
-            if (tugriks >= clickCost) {
-                tugriks -= clickCost;
-                clickIncome += 1;
-                clickLevel += 1;
-                clickCost = Math.round(clickCost * 1.5);
-                updateUI();
+        function saveNickname() {
+            const nickname = document.getElementById('nickname-input').value;
+            if (/^[a-zA-Z0-9]{1,12}$/.test(nickname)) {
+                playerNickname = nickname;
+                alert(`Ник сохранён: ${playerNickname}`);
             } else {
-                alert("Недостаточно тугриков!");
+                alert('Ник должен содержать только латинские буквы и цифры (макс. 12 символов).');
             }
-        });
-
-        upgradePassiveButton.addEventListener('click', () => {
-            if (tugriks >= passiveCost) {
-                tugriks -= passiveCost;
-                passiveIncome += 1;
-                passiveLevel += 1;
-                passiveCost = Math.round(passiveCost * 1.5);
-                updateUI();
-            } else {
-                alert("Недостаточно тугриков!");
-            }
-        });
-
-        upgradeCooldownButton.addEventListener('click', () => {
-            if (tugriks >= cooldownCost) {
-                tugriks -= cooldownCost;
-                cooldownTime -= 0.1;
-                cooldownLevel += 1;
-                cooldownCost = Math.round(cooldownCost * 1.5);
-                updateUI();
-            } else {
-                alert("Недостаточно тугриков!");
-            }
-        });
-
-        // Чат
-        toggleChatButton.addEventListener('click', () => {
-            document.getElementById('chat').classList.toggle('active');
-        });
-
-        closeChatButton.addEventListener('click', () => {
-            document.getElementById('chat').classList.remove('active');
-        });
-
-        sendMessageButton.addEventListener('click', () => {
-            const message = chatInput.value.trim();
-            if (message) {
-                const messageElement = document.createElement('div');
-                messageElement.classList.add('message');
-                messageElement.innerHTML = `
-                    <span class="nickname">${nickname} <span class="level">[${level}]</span></span>
-                    <span class="time">${new Date().toLocaleTimeString()}</span>
-                    <div>${message}</div>
-                `;
-                chatMessages.appendChild(messageElement);
-                chatInput.value = '';
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-        });
-
-        // Таймер кулдауна
-        function startCooldown() {
-            isCooldown = true;
-            farmButton.disabled = true;
-            farmButtonTimer.style.animationDuration = `${cooldownTime}s`;
-            farmButtonTimer.style.display = 'block';
-            farmButtonTimer.style.width = '100%';
-
-            setTimeout(() => {
-                isCooldown = false;
-                farmButton.disabled = false;
-                farmButtonTimer.style.display = 'none';
-            }, cooldownTime * 1000);
         }
 
-        // Обработчик клика на кнопку "Фармить"
-        farmButton.addEventListener('click', () => {
-            if (!isCooldown) {
-                tugriks += clickIncome;
-                updateUI();
-                startCooldown();
-            }
-        });
-
-        // Справочник
-        helpButton.addEventListener('click', () => {
-            helpOverlay.style.display = 'flex';
-        });
-
-        closeHelpButton.addEventListener('click', () => {
-            helpOverlay.style.display = 'none';
-        });
-
-        // Окно смены ника и уровня
-        nicknameDisplay.addEventListener('click', () => {
-            nicknameLevelOverlay.style.display = 'flex';
-        });
-
-        closeNicknameLevelButton.addEventListener('click', () => {
-            nicknameLevelOverlay.style.display = 'none';
-        });
-
-        changeNicknameButton.addEventListener('click', () => {
-            const newNickname = newNicknameInput.value.trim();
-            if (!newNickname) {
-                alert("Пожалуйста, введите новый никнейм!");
-                return;
-            }
-
-            nickname = newNickname;
-            nicknameDisplay.innerText = nickname;
-            newNicknameInput.value = '';
-            nicknameLevelOverlay.style.display = 'none'; // Закрываем окно
-        });
-
-        upgradeLevelButton.addEventListener('click', () => {
-            if (tugriks >= levelCost) {
-                tugriks -= levelCost;
-                level += 1;
-                levelCost *= 2;
-                updateUI();
-                levelDisplay.innerText = level;
-                updateLevelColor();
-            } else {
-                alert("Недостаточно тугриков!");
-            }
-        });
-
-        function updateLevelColor() {
-            const levelColor = getLevelColor(level);
-            levelDisplay.style.color = levelColor;
+        function changeLanguage(lang) {
+            alert(`Язык изменён на: ${lang}`);
         }
 
-        function getLevelColor(level) {
-            if (level >= 1000) return '#ff0000'; // Красный для 1000+ уровня
-            if (level >= 500) return '#ff8000'; // Оранжевый для 500-999 уровня
-            if (level >= 100) return '#ffff00'; // Желтый для 100-499 уровня
-            return '#ffffff'; // Белый для уровней ниже 100
+        function playSound(id) {
+            const sound = document.getElementById(id);
+            sound.currentTime = 0;
+            sound.play();
         }
 
-        // Пассивный доход
+        function updateDisplay() {
+            document.getElementById('resources').textContent = resources;
+            document.getElementById('rgr').textContent = rgr.toFixed(2);
+            document.getElementById('auto-collectors').textContent = autoCollectors;
+            document.getElementById('plant-level').textContent = plantLevel;
+            document.getElementById('spaceships').textContent = spaceships;
+            document.getElementById('orion-count').textContent = orionCount;
+            document.getElementById('torum-count').textContent = torumCount;
+            document.getElementById('avemen-count').textContent = avemenCount;
+            document.getElementById('avemen-status').textContent = avemenActive ? "активна" : "неактивна";
+            document.getElementById('auto-collector-price').textContent = autoCollectorPrice;
+            document.getElementById('upgrade-price').textContent = upgradePrice;
+            document.getElementById('spaceship-price').textContent = spaceshipPrice;
+        }
+
+        function showPanel(panelId) {
+            document.querySelectorAll('.panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            document.getElementById(panelId).classList.remove('hidden');
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showPanel('${panelId}')"]`).classList.add('active');
+        }
+
+        function showShopTab(tabId) {
+            document.querySelectorAll('.shop-tab').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            document.getElementById(`${tabId}-tab`).classList.remove('hidden');
+            document.querySelectorAll('.shop-tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`[onclick="showShopTab('${tabId}')"]`).classList.add('active');
+        }
+
+        // Запуск фоновой музыки
+        document.getElementById('background-music').play();
+
+        // Обновление рейтинга каждую секунду
+        setInterval(updateLeaderboard, 1000);
+
+        // Рандомные игроки в рейтинге
         setInterval(() => {
-            tugriks += passiveIncome;
-            updateUI();
-        }, 10000); // 10 секунд
+            const usedNames = new Set();
+            leaderboard.forEach(player => {
+                let newName;
+                do {
+                    newName = randomNames[Math.floor(Math.random() * randomNames.length)];
+                } while (usedNames.has(newName));
+                usedNames.add(newName);
+                player.name = newName;
+                player.balance += Math.floor(Math.random() * 10000);
+            });
+            leaderboard.sort((a, b) => b.balance - a.balance);
+            updateLeaderboardDisplay();
+        }, 5000);
 
-        // Инициализация интерфейса
-        updateUI();
-        miningOverlay.style.display = 'none'; // Скрываем окно добычи при старте
-        sellOverlay.style.display = 'none'; // Скрываем окно продажи при старте
-
-        // Рулетка
-        openRouletteButton.addEventListener('click', () => {
-            rouletteOverlay.style.display = 'flex';
-        });
-
-        closeRouletteButton.addEventListener('click', () => {
-            rouletteOverlay.style.display = 'none';
-        });
-
-        rouletteSpinButton.addEventListener('click', () => {
-            const betNumber = parseInt(document.getElementById('roulette-bet-number').value);
-            const betAmount = parseInt(document.getElementById('roulette-bet-amount').value);
-
-            if (isNaN(betNumber) || betNumber < 1 || betNumber > 10) {
-                alert("Пожалуйста, выберите число от 1 до 10!");
-                return;
-            }
-
-            if (isNaN(betAmount) || betAmount < 1 || betAmount > tugriks) {
-                alert("Пожалуйста, введите корректную ставку!");
-                return;
-            }
-
-            // Случайное число от 1 до 10
-            const randomNumber = Math.floor(Math.random() * 10) + 1;
-
-            // Вычисляем позицию для индикатора
-            const numberWidth = 40; // Ширина одного числа
-            const indicatorOffset = (randomNumber - 1) * numberWidth;
-
-            // Запуск анимации
-            rouletteIndicator.style.transition = 'left 3s ease-out';
-            rouletteIndicator.style.left = `${indicatorOffset}px`;
-            rouletteSpinButton.disabled = true;
-
-            // Остановка анимации и вывод результата
-            setTimeout(() => {
-                rouletteResult.textContent = `Выпало число: ${randomNumber}`;
-
-                if (randomNumber === betNumber) {
-                    const winAmount = betAmount * 11; // x11 от ставки
-                    tugriks += winAmount;
-                    rouletteResult.textContent += ` 🎉 Вы выиграли ${winAmount} тугриков!`;
-                } else {
-                    tugriks -= betAmount;
-                    rouletteResult.textContent += ` 😢 Вы проиграли ${betAmount} тугриков.`;
-                }
-
-                updateUI();
-                rouletteSpinButton.disabled = false;
-            }, 3000); // 3 секунды анимации
-        });
+        function updateLeaderboardDisplay() {
+            leaderboard.forEach((player, index) => {
+                document.getElementById(`lb-${index + 1}-name`).textContent = player.name;
+                document.getElementById(`lb-${index + 1}-balance`).textContent = player.balance.toLocaleString();
+            });
+        }
     </script>
 </body>
 </html>
